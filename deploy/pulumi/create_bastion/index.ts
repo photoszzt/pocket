@@ -1,6 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
-import * as awsx from "@pulumi/awsx";
 
 const config = new pulumi.Config();
 // org is the organization name you use to create the stack
@@ -8,7 +7,7 @@ const org = config.require('org')
 const keyName = config.require('keyName')
 const stack = pulumi.getStack()
 const vpc = new pulumi.StackReference(`${org}/create_vpc/${stack}`);
-const publicSubnetAvailabilityZone = vpc.getOutput("subnetPublicAz");
+const publicSubnetAvailabilityZone = vpc.getOutput("publicSubnetAz");
 const publicSubnetId = vpc.getOutput("publicSubnetId")
 const bastionSgId = vpc.getOutput("bastionSgId")
 

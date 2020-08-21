@@ -10,7 +10,7 @@ const keyName = config.require('keyName')
 const stack = pulumi.getStack()
 const vpc = new pulumi.StackReference(`${org}/create_vpc/${stack}`);
 
-const privateSubnetAz = vpc.getOutput("subnetPrivateAz");
+const privateSubnetAz = vpc.getOutput("privateSubnetAz");
 const privateSubnetId = vpc.getOutput("privateSubnetId");
 
 export const pocketControllerPrivateIP = "10.1.47.178";

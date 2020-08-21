@@ -1,32 +1,30 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
 const vpc_name = "pocket-aws";
 export const pocketVPCNetworkCidr = "10.1.0.0/16";
-export const subnetPublicName = "pocket-kube-public"
-export const subnetPrivateName = "pocket-kube-private"
-export const subnetPublicCidr = "10.1.129.32/27"
-export const subnetPrivateCidr = "10.1.0.0/17"
-export const subnetPublicAz="us-east-1c"
-export const subnetPrivateAz="us-east-1c"
+export const publicSubnetName = "pocket-kube-public"
+export const privateSubnetName = "pocket-kube-private"
+export const publicSubnetCidr = "10.1.129.32/27"
+export const privateSubnetCidr = "10.1.0.0/17"
+export const publicSubnetAz="us-east-1c"
+export const privateSubnetAz="us-east-1c"
 const vpc = new awsx.ec2.Vpc(vpc_name, {
     cidrBlock: pocketVPCNetworkCidr,
     subnets: [
         {
             type: "public",
-            name: subnetPublicName,
+            name: publicSubnetName,
             location: {
-                availabilityZone: subnetPublicAz,
-                cidrBlock: subnetPublicCidr,
+                availabilityZone: publicSubnetAz,
+                cidrBlock: publicSubnetCidr,
             },
         },
         {
             type: "private",
-            name: subnetPrivateName,
+            name: privateSubnetName,
             location: {
-                availabilityZone: subnetPrivateAz,
-                cidrBlock: subnetPrivateCidr,
+                availabilityZone: privateSubnetAz,
+                cidrBlock: privateSubnetCidr,
             },
         }
     ],
