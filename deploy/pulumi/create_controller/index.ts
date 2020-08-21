@@ -65,7 +65,6 @@ const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     availabilityZone: privateSubnetAz,
     privateIp: pocketControllerPrivateIP,
     subnetId: privateSubnetId,
-    associatePublicIpAddress: true,
     keyName: keyName,
     vpcSecurityGroupIds: [bastionSgId],
     userData: userData
