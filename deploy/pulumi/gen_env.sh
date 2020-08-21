@@ -23,9 +23,9 @@ VPC_OUT=$(pulumi stack output -j)
 pocketVpcId=$(echo $VPC_OUT | jq -r .POCKET_VPC_ID)
 privateSubnetId=$(echo $VPC_OUT | jq -r .privateSubnetId)
 publicSubnetId=$(echo $VPC_OUT | jq -r .publicSubnetId)
-privateSubnetCidr=$(echo $VPC_OUT | jq -r .subnetPrivateCidr)
-publicSubnetCidr=$(echo $VPC_OUT | jq -r .subnetPublicCidr)
-privateSubnetAz=$(echo $VPC_OUT | jq -r .subnetPrivateAz)
+privateSubnetCidr=$(echo $VPC_OUT | jq -r .privateSubnetCidr)
+publicSubnetCidr=$(echo $VPC_OUT | jq -r .publicSubnetCidr)
+privateSubnetAz=$(echo $VPC_OUT | jq -r .privateSubnetAz)
 cd -
 
 echo "export NAME=pocketcluster.k8s.local" > $SCRIPT_DIR/env.sh
