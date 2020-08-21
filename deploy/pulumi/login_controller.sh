@@ -14,7 +14,6 @@ cd $SCRIPT_DIR/create_bastion
 BASTION_OUT=$(pulumi stack output -j)
 BASTIONIP=$(echo $BASTION_OUT | jq -r .bastionIP)
 cd -
-echo $BASTIONIP
 cd $SCRIPT_DIR/create_controller
 CONTROLLER_OUT=$(pulumi stack output -j)
 CONTROLLER_IP=$(echo $CONTROLLER_OUT | jq -r .pocketControllerPrivateIP)
