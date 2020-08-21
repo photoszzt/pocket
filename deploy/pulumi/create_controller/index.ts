@@ -20,7 +20,7 @@ const privateSubnetCidr = vpc.getOutput("subnetPrivateCidr");
 
 const pocketVpcId = vpc.getOutput("POCKET_VPC_ID");
 
-const pocketControllerPrivateIP = "10.1.47.178";
+export const pocketControllerPrivateIP = "10.1.47.178";
 const bastionSgId = vpc.getOutput("bastionSgId")
 
 let userData =
