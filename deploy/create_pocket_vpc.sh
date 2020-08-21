@@ -20,13 +20,13 @@
 # Edits by: Ana Klimovic
 #==============================================================================
 #
-AWS_REGION="us-west-2"
+AWS_REGION="us-east-1"
 VPC_NAME="pocket-aws"
 VPC_CIDR="10.1.0.0/16"
 SUBNET_PUBLIC_CIDR="10.1.129.32/27"
 SUBNET_PRIVATE_CIDR="10.1.0.0/17"
-SUBNET_PUBLIC_AZ="us-west-2c"
-SUBNET_PRIVATE_AZ="us-west-2c"
+SUBNET_PUBLIC_AZ="us-east-1c"
+SUBNET_PRIVATE_AZ="us-east-1c"
 SUBNET_PUBLIC_NAME="pocket-kube-public"
 SUBNET_PRIVATE_NAME="pocket-kube-private"
 CHECK_FREQUENCY=5
