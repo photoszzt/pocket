@@ -11,14 +11,14 @@ spec:
     rbac: {}
   channel: stable
   cloudProvider: aws
-  configBase: ${KOPS_STATE_STORE}/pocketcluster.k8s.local
+  configBase: {{.KOPS_STATE_STORE}}/pocketcluster.k8s.local
   etcdClusters:
   - etcdMembers:
-    - instanceGroup: master-us-west-2c
+    - instanceGroup: master-{{.POCKET_AWS_ZONE}}
       name: c
     name: main
   - etcdMembers:
-    - instanceGroup: master-us-west-2c
+    - instanceGroup: master-{{.POCKET_AWS_ZONE}}
       name: c
     name: events
   iam:
@@ -26,27 +26,27 @@ spec:
     legacy: false
   kubernetesApiAccess:
   - 0.0.0.0/0
-  kubernetesVersion: 1.9.3
+  kubernetesVersion: 1.11.10
   masterPublicName: api.pocketcluster.k8s.local
-  networkCIDR: ${POCKET_VPC_NETWORK_CIDR}
-  networkID: ${POCKET_VPC_ID}
+  networkCIDR: {{.POCKET_VPC_NETWORK_CIDR}}
+  networkID: {{.POCKET_VPC_ID}}
   networking:
     weave: {}
   nonMasqueradeCIDR: 100.64.0.0/10
   sshAccess:
   - 0.0.0.0/0
   subnets:
-  - cidr: ${POCKET_VPC_PRIVATE_NETWORK_CIDR}
+  - cidr: {{.POCKET_VPC_PRIVATE_NETWORK_CIDR}}
     name: pocket-kube-private
     type: Private
-    zone: ${POCKET_AWS_ZONE}
-    id: ${POCKET_VPC_PRIVATE_SUBNET_ID}
-    egress: ${POCKET_NAT_ID}
-  - cidr: ${POCKET_VPC_PUBLIC_NETWORK_CIDR}
+    zone: {{.POCKET_AWS_ZONE}}
+    id: {{.POCKET_VPC_PRIVATE_SUBNET_ID}}
+    egress: {{.POCKET_NAT_ID}}
+  - cidr: {{.POCKET_VPC_PUBLIC_NETWORK_CIDR}}
     name: pocket-kube-public
     type: Public
-    zone: ${POCKET_AWS_ZONE}
-    id: ${POCKET_VPC_PUBLIC_SUBNET_ID}
+    zone: {{.POCKET_AWS_ZONE}}
+    id: {{.POCKET_VPC_PUBLIC_SUBNET_ID}}
   topology:
     dns:
       type: Public
@@ -61,14 +61,14 @@ metadata:
   creationTimestamp: null
   labels:
     kops.k8s.io/cluster: pocketcluster.k8s.local
-  name: master-us-west-2c
+  name: master-{{.POCKET_AWS_ZONE}}
 spec:
   image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
   machineType: m3.medium
   maxSize: 1
   minSize: 1
   nodeLabels:
-    kops.k8s.io/instancegroup: master-us-west-2c
+    kops.k8s.io/instancegroup: master-{{.POCKET_AWS_ZONE}}
   role: Master
   subnets:
   - pocket-kube-private
@@ -129,8 +129,8 @@ metadata:
     kops.k8s.io/cluster: pocketcluster.k8s.local
   name: nvme-nodes
 spec:
-  #image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
-  image: ami-310a6249
+  image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
+  # image: ami-310a6249
   machineType: i3.2xlarge
   maxSize: 0
   minSize: 0
@@ -153,8 +153,8 @@ metadata:
     kops.k8s.io/cluster: pocketcluster.k8s.local
   name: hdd-nodes
 spec:
-  #image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
-  image: ami-310a6249
+  image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
+  # image: ami-310a6249
   machineType: h1.2xlarge
   maxSize: 0
   minSize: 0
@@ -177,8 +177,8 @@ metadata:
     kops.k8s.io/cluster: pocketcluster.k8s.local
   name: ssd-nodes
 spec:
-  #image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
-  image: ami-310a6249
+  image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-02-08
+  # image: ami-310a6249
   machineType: i2.2xlarge
   maxSize: 0
   minSize: 0
