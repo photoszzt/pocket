@@ -47,6 +47,9 @@ bastionSg.createEgressRule("outbound-access", {
 export const POCKET_VPC_ID = vpc.id;
 const vpcPrivateSubnets = vpc.privateSubnets;
 const vpcPublicSubnets = vpc.publicSubnets;
+export const vpcNatGatewayId = vpc.natGateways.then(
+    natGateways => natGateways[0]["natGateway"]["id"]
+);
 export const privateSubnetId = vpcPrivateSubnets.then(
     privateSubnets => privateSubnets[0]["subnet"]["id"]);
 export const publicSubnetId = vpcPublicSubnets.then(
