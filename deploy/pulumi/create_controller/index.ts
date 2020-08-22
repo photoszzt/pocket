@@ -30,15 +30,15 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 cd /home/ubuntu
 git clone https://github.com/photoszzt/pocket.git
+sudo chown -R ubuntu:ubuntu pocket
 
 sudo apt install -y python3
 python3 -m venv k8s
-source activate k8s/bin/activate
+sudo chown -R ubuntu:ubuntu k8s
+source k8s/bin/activate
 python3 -m pip install -U pip setuptools wheel
 python3 -m pip install kubernetes
-python3 -m pip install awscli
-sudo chown -R ubuntu:ubuntu pocket
-sudo chown -R ubuntu:ubuntu k8s`
+python3 -m pip install awscli`
 
 const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     ami: "ami-0bcc094591f354be2",

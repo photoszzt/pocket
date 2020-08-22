@@ -65,6 +65,6 @@ scp -i $keyFile -o ProxyCommand="$PROXY" $SCRIPT_DIR/pocket-k8s-config.json \
   ubuntu@$CONTROLLER_IP:~
 # also setup the credential
 ssh -i $keyFile -o ProxyCommand="$PROXY" ubuntu@$CONTROLLER_IP "mkdir -p ~/.aws && source \
-  ~/k8s/bin/activate && aws configure set region us-east-1"
+  /home/ubuntu/k8s/bin/activate && ~/k8s/bin/aws configure set region us-east-1"
 scp -i $keyFile -o ProxyCommand="$PROXY" $HOME/.aws/credentials \
   ubuntu@$CONTROLLER_IP:~/.aws/
