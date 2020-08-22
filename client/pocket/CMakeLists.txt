@@ -6,11 +6,11 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 FIND_PACKAGE(Boost 1.58.0)
 IF(Boost_FOUND)
-	INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}" "/usr/include/python3.5")
+	INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}" "/usr/include/python3.6")
 	SET(Boost_USE_STATIC_LIBS OFF)
 	SET(Boost_USE_MULTITHREADED ON)
 	SET(Boost_USE_STATIC_RUNTIME OFF)
-	FIND_PACKAGE(Boost 1.58.0 COMPONENTS python)
+	FIND_PACKAGE(Boost 1.58.0 COMPONENTS python3)
 
 	ADD_LIBRARY(pocket SHARED pypocket.cxx pocket_dispatcher.cc)
 	TARGET_LINK_LIBRARIES(pocket ${Boost_LIBRARIES} cppcrail)
