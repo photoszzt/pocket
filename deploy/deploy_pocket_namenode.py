@@ -19,7 +19,9 @@ def main():
 #    time.sleep(10)
 
     with open(path.join(path.dirname(__file__), "pocket-namenode-deployment.yaml")) as f:
-        dep = yaml.load(f)
+        # use safe load to disable warnings
+        # https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation
+        dep = yaml.safe_load(f)
         k8s_beta = client.ExtensionsV1beta1Api()
         resp = k8s_beta.create_namespaced_deployment(
             body=dep, namespace="default")
