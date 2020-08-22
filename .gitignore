@@ -6,3 +6,6 @@ pocket-core/rpc-narpc/target/
 pocket-core/rpc/target/
 pocket-core/storage-narpc/target/
 pocket-core/storage/target/
+pocket-core/assembly/target/
+pocket-core/hdfs/target/
+pocket-core/storage-reflex/target/

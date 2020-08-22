@@ -28,6 +28,8 @@
   <properties>
     <build.copyDependenciesPhase>package</build.copyDependenciesPhase>
     <hadoop.version>2.7.3</hadoop.version>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
   </properties>
 
   <profiles>
@@ -82,7 +84,7 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
         <version>1.7.12</version>
-			</dependency>
+      </dependency>
       <dependency>
         <groupId>com.ibm.reflex</groupId>
         <artifactId>reflex-client</artifactId>
