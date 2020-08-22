@@ -18,7 +18,8 @@ const vmSgId = vpc.getOutput("vmSgId")
 
 let userData =
 `#!/bin/bash
-sudo apt install -y git wget curl tmux
+sudo apt update
+sudo apt install -y git wget curl tmux python3-venv jq
 wget -O kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
 chmod +x ./kops
 sudo mv ./kops /usr/local/bin/
