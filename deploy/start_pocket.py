@@ -4,12 +4,13 @@ import subprocess
 import time
 import re
 import json
+import argparse
 
-cmd = "bash ~/setup_env.sh"
-os.system(cmd)
+parser = argparse.ArgumentParser()
+parser.add_argument("state")
+args = parser.parse_args()
 
-os.chdir("/home/ubuntu/pocket/deploy")
-os.system("KOPS_RUN_OBSOLETE_VERSION=yes /home/ubuntu/pocket/deploy/setup_cluster.sh")
+os.environ["KOPS_STATE_STORE"] = args.state
 
 while True:
     print("Waiting for cluster to be ready")
@@ -27,7 +28,7 @@ while True:
     else:
         time.sleep(2)
 
-os.system("python patch_cluster.py")
+os.system("/usr/bin/python patch_cluster.py")
 
 cmd = 'aws ec2 describe-security-groups'
 result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
@@ -53,7 +54,7 @@ print("ip: ", ip)
 
 ip = re.search(r'(\d+-\d+-\d+-\d+)', ip)
 ip = ip.group()
-ip = ip.replace("-",".")
+ip = ip.replace("-", ".")
 
 cmd = 'ssh admin@{} "sudo ip route add default via 10.1.0.1 dev eth1 tab 2;sudo ip rule add from 10.1.0.10/32 tab 2 priority 700"'.format(ip)
 print(cmd)

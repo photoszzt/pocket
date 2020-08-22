@@ -15,7 +15,7 @@ def main():
 #        resp = k8s_beta.create_namespaced_service(
 #            body=service, namespace="default")
 #        print("Service created. status='%s'" % str(resp.status))
-#   
+#
 #    time.sleep(10)
 
     with open(path.join(path.dirname(__file__), "pocket-namenode-deployment.yaml")) as f:
