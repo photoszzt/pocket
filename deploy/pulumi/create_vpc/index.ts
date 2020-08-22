@@ -32,6 +32,8 @@ const vpc = new awsx.ec2.Vpc(vpc_name, {
     numberOfAvailabilityZones: 1,
 });
 let defaultSgId = vpc.vpc.defaultSecurityGroupId
+// this security group is for vm and lambda; the name is chosen in the patch-cluster.py script
+const pocketRelaxSg = new awsx.ec2.SecurityGroup('pocket-kube-relax', { vpc });
 const bastionSg = new awsx.ec2.SecurityGroup('pocket-aws-bastion', { vpc });
 bastionSg.createIngressRule("ssh-access", {
     location: { cidrBlocks: [ "0.0.0.0/0" ]},
@@ -74,3 +76,4 @@ export const publicSubnetId = vpcPublicSubnets.then(
 );
 export const bastionSgId = bastionSg.id;
 export const vmSgId = vmSg.id;
+export const pocketRelaxSgId = pocketRelaxSg.id;
