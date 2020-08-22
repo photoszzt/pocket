@@ -28,7 +28,7 @@ while True:
     else:
         time.sleep(2)
 
-os.system("/usr/bin/python patch_cluster.py")
+os.system("python3 patch_cluster.py")
 
 cmd = 'aws ec2 describe-security-groups'
 result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
@@ -60,6 +60,6 @@ cmd = 'ssh admin@{} "sudo ip route add default via 10.1.0.1 dev eth1 tab 2;sudo 
 print(cmd)
 os.system(cmd)
 
-os.system("python deploy_pocket_namenode.py")
+os.system("python3 deploy_pocket_namenode.py")
 
 sys.exit(0)

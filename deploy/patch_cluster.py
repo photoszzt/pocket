@@ -15,6 +15,7 @@ def get_exitcode_stdout_stderr(cmd):
 
     proc = Popen(args, stdout=PIPE, stderr=PIPE)
     out, err = proc.communicate()
+    out = out.decode('utf-8')
     exitcode = proc.returncode
     #
     return exitcode, out, err
@@ -196,7 +197,7 @@ def add_lambda_security_group_ingress_rule():
     node_groupid = re.search(pattern, out).group().strip('\"')
     #print pocket_lax_groupid, node_groupid
 
-    # add ingress rule for node group to accept traffic from pocket-kubernetes-lax group (this is group lamdbas will be in)
+    # add ingress rule for node group to accept traffic from pocket-kubernetes-relax group (this is group lamdbas will be in)
     modify_security_group_command = 'aws ec2 authorize-security-group-ingress --group-id ' + node_groupid + ' --protocol all --source-group ' + pocket_lax_groupid
     print(modify_security_group_command)
     sp.call(modify_security_group_command, shell=True)
