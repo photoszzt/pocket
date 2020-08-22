@@ -18,7 +18,7 @@ def main():
     config.load_kube_config()
     
     with open(path.join(path.dirname(__file__), yaml_file)) as f:
-        job = yaml.load(f)
+        job = yaml.safe_load(f)
         k8s_beta = client.BatchV1Api()
         resp = k8s_beta.create_namespaced_job(
             body=job, namespace="default")

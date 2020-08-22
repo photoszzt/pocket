@@ -16,6 +16,7 @@ def get_exitcode_stdout_stderr(cmd):
 
     proc = Popen(args, stdout=PIPE, stderr=PIPE)
     out, err = proc.communicate()
+    out = out.decode('utf-8')
     exitcode = proc.returncode
     #
     return exitcode, out, err
