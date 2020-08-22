@@ -1,0 +1,8 @@
+client/build/
+pocket-core/client/target/
+pocket-core/namenode/target/
+pocket-core/reflex-client/target/
+pocket-core/rpc-narpc/target/
+pocket-core/rpc/target/
+pocket-core/storage-narpc/target/
+pocket-core/storage/target/
