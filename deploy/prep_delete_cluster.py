@@ -1,3 +1,4 @@
+from __future__ import print_function
 import subprocess as sp
 import shlex
 from subprocess import Popen, PIPE
@@ -26,20 +27,20 @@ def remove_i3_enis():
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     p = re.compile(pattern)
-    i3_attachment_ids = p.findall(out) 
-    print "i3 attachement ids: ", i3_attachment_ids
+    i3_attachment_ids = p.findall(out)
+    print("i3 attachement ids: ", i3_attachment_ids)
 
     for i3_attachment_id in i3_attachment_ids:
         # detach eni
         cmd = "aws ec2 detach-network-interface --attachment-id " + i3_attachment_id
         sp.call(cmd, shell=True)
-    
+
     # get i3 eni id
     cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for i3*' --query \"NetworkInterfaces[*].NetworkInterfaceId\""
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
-    i3_enis = p.findall(out) 
-    print "i3 enis: ", i3_enis
-    
+    i3_enis = p.findall(out)
+    print("i3 enis: ", i3_enis)
+
     time.sleep(60)
 
     for i3_eni in i3_enis:
@@ -53,20 +54,20 @@ def remove_h1_enis():
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     p = re.compile(pattern)
-    h1_attachment_ids = p.findall(out) 
-    print "h1 attachement ids: ", h1_attachment_ids
+    h1_attachment_ids = p.findall(out)
+    print("h1 attachement ids: ", h1_attachment_ids)
 
     for h1_attachment_id in h1_attachment_ids:
         # detach eni
         cmd = "aws ec2 detach-network-interface --attachment-id " + h1_attachment_id
         sp.call(cmd, shell=True)
-    
+
     # get h1 eni id
     cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for h1*' --query \"NetworkInterfaces[*].NetworkInterfaceId\""
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
-    h1_enis = p.findall(out) 
-    print "h1 enis: ", h1_enis
-    
+    h1_enis = p.findall(out)
+    print("h1 enis: ", h1_enis)
+
     time.sleep(60)
 
     for h1_eni in h1_enis:
@@ -80,20 +81,20 @@ def remove_i2_enis():
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     p = re.compile(pattern)
-    i2_attachment_ids = p.findall(out) 
-    print "i2 attachement ids: ", i2_attachment_ids
+    i2_attachment_ids = p.findall(out)
+    print("i2 attachement ids: ", i2_attachment_ids)
 
     for i2_attachment_id in i2_attachment_ids:
         # detach eni
         cmd = "aws ec2 detach-network-interface --attachment-id " + i2_attachment_id
         sp.call(cmd, shell=True)
-    
+
     # get i2 eni id
     cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for i2*' --query \"NetworkInterfaces[*].NetworkInterfaceId\""
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
-    i2_enis = p.findall(out) 
-    print "i2 enis: ", i2_enis
-    
+    i2_enis = p.findall(out)
+    print("i2 enis: ", i2_enis)
+
     time.sleep(60)
 
     for i2_eni in i2_enis:
@@ -116,14 +117,14 @@ def remove_namenode_eni():
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     namenode_eni = re.search(pattern, out).group().strip('\"')
-    print "Namenode ENI id is: " + namenode_eni
+    print("Namenode ENI id is: " + namenode_eni)
 
     time.sleep(60)
 
     # delete eni to free up security group for kops to delete
     cmd = "aws ec2 delete-network-interface --network-interface-id " + namenode_eni
     sp.call(cmd, shell=True)
-    
+
 def main():
     remove_namenode_eni()
     remove_i3_enis()
