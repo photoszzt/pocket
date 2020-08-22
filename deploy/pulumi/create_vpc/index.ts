@@ -31,7 +31,7 @@ const vpc = new awsx.ec2.Vpc(vpc_name, {
     numberOfNatGateways: 1,
     numberOfAvailabilityZones: 1,
 });
-
+let defaultSgId = vpc.vpc.defaultSecurityGroupId
 const bastionSg = new awsx.ec2.SecurityGroup('pocket-aws-bastion', { vpc });
 bastionSg.createIngressRule("ssh-access", {
     location: { cidrBlocks: [ "0.0.0.0/0" ]},
@@ -39,6 +39,23 @@ bastionSg.createIngressRule("ssh-access", {
     description: "allow ssh access"
 });
 bastionSg.createEgressRule("outbound-access", {
+    location: { cidrBlocks: [ "0.0.0.0/0" ] },
+    ports: { protocol: "-1", fromPort: 0, toPort: 0 },
+    description: "allow outbound access to anywhere",
+});
+
+const vmSg = new awsx.ec2.SecurityGroup('vm', { vpc });
+vmSg.createIngressRule("vmSsh-access", {
+    location: { cidrBlocks: [ "0.0.0.0/0" ]},
+    ports: { protocol: "tcp", fromPort: 22 },
+    description: "allow ssh access"
+});
+vmSg.createIngressRule("vmInternal-access", {
+    location: { sourceSecurityGroupId: defaultSgId },
+    ports: { protocol: "-1", fromPort: 0, toPort: 0 },
+    description: "allow all internal inbound access"
+})
+vmSg.createEgressRule("vmOutbound-access", {
     location: { cidrBlocks: [ "0.0.0.0/0" ] },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
     description: "allow outbound access to anywhere",
@@ -56,3 +73,4 @@ export const publicSubnetId = vpcPublicSubnets.then(
     publicSubnets => publicSubnets[0]["subnet"]["id"]
 );
 export const bastionSgId = bastionSg.id;
+export const vmSgId = vmSg.id;

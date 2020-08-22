@@ -12,7 +12,7 @@ const publicSubnetId = vpc.getOutput("publicSubnetId")
 const bastionSgId = vpc.getOutput("bastionSgId")
 
 const bastion = new aws.ec2.Instance("bastion", {
-    ami: "ami-02354e95b39ca8dec",
+    ami: "ami-0bcc094591f354be2",
     instanceType: "t2.micro",
     tags: {
         Name: "pocket-bastion"

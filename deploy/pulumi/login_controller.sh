@@ -19,5 +19,5 @@ CONTROLLER_OUT=$(pulumi stack output -j)
 CONTROLLER_IP=$(echo $CONTROLLER_OUT | jq -r .pocketControllerPrivateIP)
 cd -
 
-echo "ssh -i $keyFile -o ProxyCommand=\"ssh -W %h:%p -i $keyFile ec2-user@$BASTIONIP\" ec2-user@$CONTROLLER_IP"
-ssh -i $keyFile -o ProxyCommand="ssh -W %h:%p -i $keyFile ec2-user@$BASTIONIP" ec2-user@$CONTROLLER_IP
+echo "ssh -i $keyFile -o ProxyCommand=\"ssh -W %h:%p -i $keyFile ubuntu@$BASTIONIP\" ubuntu@$CONTROLLER_IP"
+ssh -i $keyFile -o ProxyCommand="ssh -W %h:%p -i $keyFile ubuntu@$BASTIONIP" ubuntu@$CONTROLLER_IP

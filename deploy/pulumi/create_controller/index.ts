@@ -14,11 +14,11 @@ const privateSubnetAz = vpc.getOutput("privateSubnetAz");
 const privateSubnetId = vpc.getOutput("privateSubnetId");
 
 export const pocketControllerPrivateIP = "10.1.47.178";
-const bastionSgId = vpc.getOutput("bastionSgId")
+const vmSgId = vpc.getOutput("vmSgId")
 
 let userData =
 `#!/bin/bash
-sudo yum install -y git wget curl
+sudo apt install -y git wget curl tmux
 wget -O kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
 chmod +x ./kops
 sudo mv ./kops /usr/local/bin/
@@ -27,20 +27,20 @@ wget -O kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
-cd /home/ec2-user
+cd /home/ubuntu
 git clone https://github.com/photoszzt/pocket.git
 
-sudo yum install -y python3
+sudo apt install -y python3
 python3 -m venv k8s
 source activate k8s/bin/activate
 python3 -m pip install -U pip setuptools wheel
 python3 -m pip install kubernetes
 python3 -m pip install awscli
-sudo chown -R ec2-user:ec2-user pocket
-sudo chown -R ec2-user:ec2-user k8s`
+sudo chown -R ubuntu:ubuntu pocket
+sudo chown -R ubuntu:ubuntu k8s`
 
 const pocket_controller = new aws.ec2.Instance("pocket-controller", {
-    ami: "ami-02354e95b39ca8dec",
+    ami: "ami-0bcc094591f354be2",
     instanceType: "c5.2xlarge",
     tags: {
         Name: "PocketController",
@@ -49,7 +49,7 @@ const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     privateIp: pocketControllerPrivateIP,
     subnetId: privateSubnetId,
     keyName: keyName,
-    vpcSecurityGroupIds: [bastionSgId],
+    vpcSecurityGroupIds: [vmSgId],
     userData: userData
 });
 
