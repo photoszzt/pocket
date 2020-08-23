@@ -12,6 +12,11 @@ IF(Boost_FOUND)
 	SET(Boost_USE_STATIC_RUNTIME OFF)
 	FIND_PACKAGE(Boost 1.58.0 COMPONENTS python3)
 
+	find_package(PythonLibs 3 REQUIRED)
+	message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
+	message("Libs of Python: " ${PYTHON_LIBRARIES} )
+	include_directories(${PYTHON_INCLUDE_DIRS})
+
 	ADD_LIBRARY(pocket SHARED pypocket.cxx pocket_dispatcher.cc)
 	TARGET_LINK_LIBRARIES(pocket ${Boost_LIBRARIES} cppcrail)
 ELSEIF(NOT Boost_FOUND)
