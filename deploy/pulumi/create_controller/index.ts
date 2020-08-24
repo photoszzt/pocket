@@ -19,7 +19,12 @@ const vmSgId = vpc.getOutput("vmSgId")
 let userData =
 `#!/bin/bash
 sudo apt update
-sudo apt install -y git wget curl tmux python3-venv jq
+sudo apt install -y git wget curl tmux python3-venv jq \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
 wget -O kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
 chmod +x ./kops
 sudo mv ./kops /usr/local/bin/
@@ -37,7 +42,16 @@ python3 -m venv k8s
 sudo chown -R ubuntu:ubuntu k8s
 source k8s/bin/activate
 python3 -m pip install -U pip setuptools wheel
-python3 -m pip install kubernetes awscli pandas`
+python3 -m pip install kubernetes awscli pandas
+
+sudo apt-get remove docker docker-engine docker.io containerd runc
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) \
+    stable"
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io`
 
 const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     ami: "ami-0bcc094591f354be2",
