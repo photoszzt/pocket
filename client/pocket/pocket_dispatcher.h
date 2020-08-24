@@ -42,7 +42,7 @@ public:
   int Enumerate(string name);
   int PutFile(string local_file, string dst_file, bool enumerable);
   int GetFile(string src_file, string local_file);
-  int PutBuffer(const char buf[], int len, string dst_file, bool enumerable);
+  int PutBuffer(string input_data, string dst_file, bool enumerable);
   int GetBuffer(char buf[], int len, string src_file);
   int DeleteFile(string file);
   int DeleteDir(string directory);

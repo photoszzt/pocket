@@ -182,8 +182,10 @@ int PocketDispatcher::CountFiles(string directory) {
   return crail_.Ioctl((unsigned char)op, directory);
 }
 
-int PocketDispatcher::PutBuffer(const char data[], int len, string dst_file,
+int PocketDispatcher::PutBuffer(string input_data, string dst_file,
                                 bool enumerable) {
+  const char* data = input_data.data();
+  int len = input_data.size();
   unique_ptr<CrailNode> crail_node =
       crail_.Create(dst_file, FileType::File, 0, 0, enumerable);
   if (!crail_node) {
