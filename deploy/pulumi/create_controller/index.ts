@@ -52,7 +52,8 @@ sudo add-apt-repository \
     $(lsb_release -cs) \
     stable"
 sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io`
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker ubuntu`
 
 const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     ami: "ami-0bcc094591f354be2",
