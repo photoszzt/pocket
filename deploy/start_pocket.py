@@ -7,11 +7,25 @@ import json
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("state")
+parser.add_argument("config")
 args = parser.parse_args()
 
-os.environ["KOPS_STATE_STORE"] = args.state
+ssh_file = os.path.expanduser("~/.ssh/id_rsa.pub")
+if not os.path.exists(ssh_file):
+    print("public key file doesn't exist; please generate it")
+    sys.exit(1)
 
+script_dir = os.path.dirname(os.path.realpath(__file__))
+k8s_cmd = os.path.join(script_dir, 'setup_cluster.sh')
+
+config_file = os.path.expanduser(args.config)
+print(k8s_cmd, config_file)
+subprocess.run([k8s_cmd, config_file])
+
+with open(args.config, 'r') as f:
+    config = json.load(f)
+state = config['KOPS_STATE_STORE']
+os.environ["KOPS_STATE_STORE"] = state
 while True:
     print("Waiting for cluster to be ready")
     result = subprocess.run("kops validate cluster".split(), stdout=subprocess.PIPE)

@@ -195,7 +195,7 @@ def add_lambda_security_group_ingress_rule():
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     node_groupid = re.search(pattern, out).group().strip('\"')
-    #print pocket_lax_groupid, node_groupid
+    print(pocket_lax_groupid, node_groupid)
 
     # add ingress rule for node group to accept traffic from pocket-kubernetes-relax group (this is group lamdbas will be in)
     modify_security_group_command = 'aws ec2 authorize-security-group-ingress --group-id ' + node_groupid + ' --protocol all --source-group ' + pocket_lax_groupid
