@@ -70,7 +70,7 @@ ip = re.search(r'(\d+-\d+-\d+-\d+)', ip)
 ip = ip.group()
 ip = ip.replace("-", ".")
 
-cmd = 'ssh admin@{} "sudo ip route add default via 10.1.0.1 dev eth1 tab 2;sudo ip rule add from 10.1.0.10/32 tab 2 priority 700"'.format(ip)
+cmd = 'ssh admin@{} "sudo ip address add 10.1.0.10/17 dev eth1;sudo ip route add default via 10.1.0.1 dev eth1 tab 2;sudo ip rule add from 10.1.0.10/32 tab 2 priority 700"'.format(ip)
 print(cmd)
 os.system(cmd)
 

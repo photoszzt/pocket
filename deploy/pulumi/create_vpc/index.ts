@@ -34,6 +34,22 @@ const vpc = new awsx.ec2.Vpc(vpc_name, {
 let defaultSgId = vpc.vpc.defaultSecurityGroupId
 // this security group is for vm and lambda; the name is chosen in the patch-cluster.py script
 const pocketRelaxSg = new awsx.ec2.SecurityGroup('pocket-kube-relax', { vpc });
+pocketRelaxSg.createIngressRule("relaxSsh-access", {
+    location: { cidrBlocks: [ "0.0.0.0/0" ]},
+    ports: { protocol: "tcp", fromPort: 22 },
+    description: "allow ssh access"
+});
+pocketRelaxSg.createIngressRule("pocketRelaxInternal-access", {
+    location: { sourceSecurityGroupId: defaultSgId },
+    ports: { protocol: "-1", fromPort: 0, toPort: 0 },
+    description: "allow all internal inbound access"
+})
+pocketRelaxSg.createEgressRule("relax-outbound-access", {
+    location: { cidrBlocks: [ "0.0.0.0/0" ] },
+    ports: { protocol: "-1", fromPort: 0, toPort: 0 },
+    description: "allow outbound access to anywhere",
+});
+
 const bastionSg = new awsx.ec2.SecurityGroup('pocket-aws-bastion', { vpc });
 bastionSg.createIngressRule("ssh-access", {
     location: { cidrBlocks: [ "0.0.0.0/0" ]},

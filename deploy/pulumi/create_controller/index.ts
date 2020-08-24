@@ -15,6 +15,7 @@ const privateSubnetId = vpc.getOutput("privateSubnetId");
 
 export const pocketControllerPrivateIP = "10.1.47.178";
 const vmSgId = vpc.getOutput("vmSgId")
+const pocketRelaxSgId = vpc.getOutput("pocketRelaxSgId");
 
 let userData =
 `#!/bin/bash
@@ -63,7 +64,7 @@ const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     privateIp: pocketControllerPrivateIP,
     subnetId: privateSubnetId,
     keyName: keyName,
-    vpcSecurityGroupIds: [vmSgId],
+    vpcSecurityGroupIds: [vmSgId, pocketRelaxSgId],
     userData: userData
 });
 
