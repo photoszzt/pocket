@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <string.h>
+#include <boost/python.hpp>
 
 #include "crail_directory.h"
 #include "crail_file.h"
@@ -230,7 +231,8 @@ int PocketDispatcher::GetBuffer(char data[], int len, string src_file) {
   return 0;
 }
 
-string PocketDispatcher::GetBufferBytes(string src_file) {
+boost::python::object PocketDispatcher::GetBufferBytes(string src_file) {
+  namespace python = boost::python;
   unique_ptr<CrailNode> crail_node = crail_.Lookup(src_file);
   if (!crail_node) {
     throw LookupNodeException();
@@ -251,5 +253,7 @@ string PocketDispatcher::GetBufferBytes(string src_file) {
     buf->Clear();
   }
   inputstream->Close();
-  return output;
+  PyObject* py_object = PyBytes_FromStringAndSize(output.data(), output.size());
+  python::handle<> handle(python::borrowed(py_object));
+  return python::object(handle);
 }

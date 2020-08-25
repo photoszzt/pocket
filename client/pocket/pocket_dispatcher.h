@@ -25,6 +25,7 @@
 #define CRAIL_DISPATCHER_H
 
 #include <string>
+#include <boost/python.hpp>
 
 #include "crail_store.h"
 
@@ -45,7 +46,7 @@ public:
   int GetFile(string src_file, string local_file);
   int PutBuffer(string input_data, string dst_file, bool enumerable);
   int GetBuffer(char buf[], int len, string src_file);
-  string GetBufferBytes(string src_file);
+  boost::python::object GetBufferBytes(string src_file);
   int DeleteFile(string file);
   int DeleteDir(string directory);
   int CountFiles(string directory);
