@@ -30,7 +30,8 @@
 
 using namespace std;
 
-class PocketDispatcher {
+class PocketDispatcher
+{
 public:
   PocketDispatcher();
   virtual ~PocketDispatcher();
@@ -44,12 +45,32 @@ public:
   int GetFile(string src_file, string local_file);
   int PutBuffer(string input_data, string dst_file, bool enumerable);
   int GetBuffer(char buf[], int len, string src_file);
+  string GetBufferBytes(string src_file);
   int DeleteFile(string file);
   int DeleteDir(string directory);
   int CountFiles(string directory);
 
 private:
   CrailStore crail_;
+};
+
+class LookupNodeException : public std::runtime_error
+{
+public:
+  LookupNodeException() : runtime_error("lookup node failed") {}
+};
+
+class NodeNotFileException : public std::runtime_error
+{
+public:
+  NodeNotFileException() : runtime_error("node is not a file") {}
+};
+
+class OpenLocalFileError : public std::runtime_error
+{
+public:
+  OpenLocalFileError() : runtime_error("could not open local file") {}
+  OpenLocalFileError(const std::string &msg) : runtime_error("could not open local file: " + msg) {}
 };
 
 #endif /* CRAIL_DISPATCHER_H */

@@ -2,12 +2,8 @@
 ##  Python library/API to communicate with Pocket    ##
 #######################################################
 
-import time
-import sys
-import os
 import socket
 import struct
-import errno
 import libpocket
 from subprocess import call, Popen
 
@@ -217,6 +213,30 @@ def get_buffer(pocket, src_filename, dst, len, jobid, DELETE_AFTER_READ=False):
         res = delete(pocket, src_filename, jobid)
 
     return res
+
+
+def get_buffer_bytes(pocket, src_filename, jobid, DELETE_AFTER_READ=False):
+    '''
+    Send a GET request to Pocket to read key
+
+    :param pocket:           pocketHandle returned from connect()
+    :param str src_filename: name of file/key in Pocket from which reading
+    :param str jobid:        id unique to this job, used to separate keyspace for job
+    :param DELETE_AFTER_READ:optional hint, if True, data deleted after job done
+    :return: the Pocket dispatcher response
+    '''
+    if jobid:
+        jobid = "/" + jobid
+
+    get_filename = jobid + "/" + src_filename
+
+    dst = pocket.GetBufferBytes(get_filename)
+
+    res = 0
+    if DELETE_AFTER_READ:
+        res = delete(pocket, src_filename, jobid)
+
+    return dst, res
 
 
 def lookup(pocket, src_filename, jobid):

@@ -53,8 +53,7 @@ int PocketDispatcher::MakeDir(string name) {
 int PocketDispatcher::Lookup(string name) {
   unique_ptr<CrailNode> crail_node = crail_.Lookup(name);
   if (!crail_node) {
-    cout << "lookup node failed" << endl;
-    return -1;
+    throw LookupNodeException();
   }
   return 0;
 }
@@ -62,12 +61,10 @@ int PocketDispatcher::Lookup(string name) {
 int PocketDispatcher::Enumerate(string name) {
   unique_ptr<CrailNode> crail_node = crail_.Lookup(name);
   if (!crail_node) {
-    cout << "lookup node failed" << endl;
-    return -1;
+    throw LookupNodeException();
   }
   if (crail_node->type() != static_cast<int>(FileType::Directory)) {
-    cout << "node is not a directory" << endl;
-    return -1;
+    throw std::runtime_error("node is not a directory");
   }
 
   CrailNode *node = crail_node.get();
@@ -80,19 +77,16 @@ int PocketDispatcher::PutFile(string local_file, string dst_file,
                               bool enumerable) {
   FILE *fp = fopen(local_file.c_str(), "r");
   if (!fp) {
-    cout << "could not open local file " << local_file.c_str() << endl;
-    return -1;
+    throw OpenLocalFileError(local_file);
   }
 
   unique_ptr<CrailNode> crail_node =
       crail_.Create(dst_file, FileType::File, 0, 0, enumerable);
   if (!crail_node) {
-    cout << "create node failed" << endl;
-    return -1;
+    throw LookupNodeException();
   }
   if (crail_node->type() != static_cast<int>(FileType::File)) {
-    cout << "node is not a file" << endl;
-    return -1;
+    throw NodeNotFileException();
   }
 
   CrailNode *node = crail_node.get();
@@ -133,18 +127,15 @@ int PocketDispatcher::PutFile(string local_file, string dst_file,
 int PocketDispatcher::GetFile(string src_file, string local_file) {
   unique_ptr<CrailNode> crail_node = crail_.Lookup(src_file);
   if (!crail_node) {
-    cout << "lookup node failed" << endl;
-    return -1;
+    throw LookupNodeException();
   }
   if (crail_node->type() != static_cast<int>(FileType::File)) {
-    cout << "node is not a file" << endl;
-    return -1;
+    throw NodeNotFileException();
   }
 
   FILE *fp = fopen(local_file.c_str(), "w");
   if (!fp) {
-    cout << "could not open local file " << local_file.c_str() << endl;
-    return -1;
+    throw OpenLocalFileError(local_file);
   }
 
   CrailNode *node = crail_node.get();
@@ -189,12 +180,10 @@ int PocketDispatcher::PutBuffer(string input_data, string dst_file,
   unique_ptr<CrailNode> crail_node =
       crail_.Create(dst_file, FileType::File, 0, 0, enumerable);
   if (!crail_node) {
-    cout << "create node failed" << endl;
-    return -1;
+    throw LookupNodeException();
   }
   if (crail_node->type() != static_cast<int>(FileType::File)) {
-    cout << "node is not a file" << endl;
-    return -1;
+    throw NodeNotFileException();
   }
 
   CrailNode *node = crail_node.get();
@@ -217,12 +206,10 @@ int PocketDispatcher::PutBuffer(string input_data, string dst_file,
 int PocketDispatcher::GetBuffer(char data[], int len, string src_file) {
   unique_ptr<CrailNode> crail_node = crail_.Lookup(src_file);
   if (!crail_node) {
-    cout << "lookup node failed" << endl;
-    return -1;
+    throw LookupNodeException();
   }
   if (crail_node->type() != static_cast<int>(FileType::File)) {
-    cout << "node is not a file" << endl;
-    return -1;
+    throw NodeNotFileException();
   }
 
   CrailNode *node = crail_node.get();
@@ -241,4 +228,28 @@ int PocketDispatcher::GetBuffer(char data[], int len, string src_file) {
   inputstream->Close();
 
   return 0;
+}
+
+string PocketDispatcher::GetBufferBytes(string src_file) {
+  unique_ptr<CrailNode> crail_node = crail_.Lookup(src_file);
+  if (!crail_node) {
+    throw LookupNodeException();
+  }
+  if (crail_node->type() != static_cast<int>(FileType::File)) {
+    throw NodeNotFileException();
+  }
+
+  CrailNode *node = crail_node.get();
+  CrailFile *file = static_cast<CrailFile *>(node);
+  unique_ptr<CrailInputstream> inputstream = file->inputstream();
+
+  string output;
+  shared_ptr<ByteBuffer> buf = make_shared<ByteBuffer>(kBufferSize);
+  while (inputstream->Read(buf) > 0) {
+    buf->Flip();
+    output.append(reinterpret_cast<char*>(buf->get_bytes()), buf->size());
+    buf->Clear();
+  }
+  inputstream->Close();
+  return output;
 }
