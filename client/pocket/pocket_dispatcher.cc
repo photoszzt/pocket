@@ -45,8 +45,7 @@ int PocketDispatcher::MakeDir(string name) {
   unique_ptr<CrailNode> crail_node =
       crail_.Create(name, FileType::Directory, 0, 0, true);
   if (!crail_node) {
-    cout << "makedir failed " << endl;
-    return -1;
+    throw std::runtime_error("makedir failed");
   }
   return 0;
 }

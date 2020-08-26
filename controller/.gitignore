@@ -2,3 +2,4 @@ __pycache__/
 libcppcrail.so
 libpocket.so
 pocket.py
+resource_util.log

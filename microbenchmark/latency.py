@@ -1,6 +1,8 @@
 import os
 import time
 import pocket
+import random
+import string
 import subprocess
 
 def pocket_write(p, jobid, iter, src_filename):
@@ -28,7 +30,7 @@ def pocket_lookup(p, jobid, iter):
 def pocket_write_buffer(p, jobid, iter, src, size):
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        r = pocket.put_buffer(p, src, size, dst_filename, jobid)  
+        r = pocket.put_buffer(p, src, dst_filename, jobid)
         if r != 0:
             raise Exception("put buffer failed: "+ dst_filename)
 
@@ -39,6 +41,16 @@ def pocket_read_buffer(p, jobid, iter, text_back_tmp, size):
         r = pocket.get_buffer(p, dst_filename, text_back, size, jobid)
         if r != 0:
             raise Exception("get buffer failed: "+ dst_filename)
+
+def pocket_read_buffer(p, jobid, iter, text_back_tmp, size):
+    for i in range(iter):
+        dst_filename = 'tmp'+'-'+str(i)
+        text_back = pocket.get_buffer_bytes(p, dst_filename, jobid)
+
+def rand_str(slen):
+    ''.join(random.choice(string.ascii_lowercase + string.digits)
+            for _ in range(slen))
+
 
 def lambda_handler(event, context):
     # create a file of size (datasize) in bytes
@@ -56,7 +68,7 @@ def lambda_handler(event, context):
     p = pocket.connect(namenode_ip, 9070)
 
     # test read/write through buffer 
-    dir = jobid+"microbenchmark"
+    dir = jobid + "microbenchmark" + rand_str(4)
     pocket.create_dir(p, dir, "")
     jobid = dir
 
@@ -94,3 +106,7 @@ def lambda_handler(event, context):
     os.remove(file_tmp)
     return
 
+
+if __name__ == '__main__':
+    print("main")
+    lambda_handler({}, {})
