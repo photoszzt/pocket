@@ -73,6 +73,21 @@ int PocketDispatcher::Enumerate(string name) {
   return 0;
 }
 
+std::vector<string> PocketDispatcher::EnumerateWithReturn(string name) {
+  unique_ptr<CrailNode> crail_node = crail_.Lookup(name);
+  if (!crail_node) {
+    throw LookupNodeException();
+  }
+  if (crail_node->type() != static_cast<int>(FileType::Directory)) {
+    throw std::runtime_error("node is not a directory");
+  }
+
+  CrailNode *node = crail_node.get();
+  CrailDirectory *directory = static_cast<CrailDirectory *>(node);
+  auto content = directory->EnumerateWithReturn();
+  return content;
+}
+
 int PocketDispatcher::PutFile(string local_file, string dst_file,
                               bool enumerable) {
   FILE *fp = fopen(local_file.c_str(), "r");

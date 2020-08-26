@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include "crail_inputstream.h"
 #include "directory_record.h"
@@ -58,4 +59,23 @@ int CrailDirectory::Enumerate() {
   }
 
   return 0;
+}
+
+std::vector<std::string> CrailDirectory::EnumerateWithReturn() {
+  std::vector<std::string> dir_content;
+  int records = file_info_->capacity() / 512;
+  unique_ptr<CrailInputstream> input_stream = make_unique<CrailInputstream>(
+      namenode_client_, storage_cache_, block_cache_, file_info_, 0);
+  shared_ptr<ByteBuffer> buf = make_shared<ByteBuffer>(512);
+  DirectoryRecord record;
+  for (int i = 0; i < records; i++) {
+    buf->Clear();
+    input_stream->Read(buf);
+    buf->Flip();
+    record.Update(*buf);
+    if (record.valid()) {
+      dir_content.push_back(record.name());
+    }
+  }
+  return dir_content;
 }

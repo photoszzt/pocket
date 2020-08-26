@@ -42,6 +42,7 @@ public:
   int MakeDir(string name);
   int Lookup(string name);
   int Enumerate(string name);
+  std::vector<string> EnumerateWithReturn(string name);
   int PutFile(string local_file, string dst_file, bool enumerable);
   int GetFile(string src_file, string local_file);
   int PutBuffer(string input_data, string dst_file, bool enumerable);

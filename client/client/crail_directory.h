@@ -24,6 +24,7 @@
 #ifndef CRAIL_DIRECTORY_H
 #define CRAIL_DIRECTORY_H
 
+#include <vector>
 #include "crail_node.h"
 #include "metadata/file_info.h"
 #include "namenode/namenode_client.h"
@@ -38,6 +39,7 @@ public:
   virtual ~CrailDirectory();
 
   int Enumerate();
+  std::vector<std::string> EnumerateWithReturn();
 
 private:
   shared_ptr<NamenodeClient> namenode_client_;
