@@ -106,7 +106,7 @@ def lambda_handler(event, context):
     t1 = time.time()
     print("==========================================")
     print("Stats for "+str(iter)+" iter of " +
-          str(datasize)+" bytes read_buffer:")
+          str(datasize)+" bytes read_buffer_bytes:")
     throughput = iter*datasize*8/(t1-t0)/1e9
     print("throughput (Gb/s) = " + str(throughput))
     print("latency (us) = " + str((t1-t0)/iter*1e6))
