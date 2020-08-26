@@ -253,6 +253,6 @@ boost::python::object PocketDispatcher::GetBufferBytes(string src_file) {
   }
   inputstream->Close();
   PyObject* py_object = PyBytes_FromStringAndSize(output.data(), output.size());
-  python::handle<> handle(python::borrowed(py_object));
+  python::handle<> handle(py_object);
   return python::object(handle);
 }
