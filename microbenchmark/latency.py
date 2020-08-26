@@ -92,8 +92,14 @@ def lambda_handler(event, context):
     list_dir = pocket.list_dir(p, None, jobid)
     list_dir_list = [f for f in list_dir]
     print(list_dir_list)
-    list_file = pocket.list_dir(p, 'tmp-0', jobid)
-    print(list_file)
+    count = pocket.count_files(p, None, jobid)
+    print(f'num files: {count}')
+    try:
+        list_file = pocket.list_dir(p, 'tmp-0', jobid)
+    except RuntimeError as e:
+        stre = str(e)
+        if stre != 'node is not a directory':
+            raise
 
     text_back = " "*datasize
     t0 = time.time()
