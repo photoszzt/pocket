@@ -338,3 +338,25 @@ def close(pocket):
     :return: the Pocket dispatcher response
     '''
     return pocket.Close()  # TODO
+
+
+def list_dir(pocket, dirname, jobid):
+    '''
+    Send a COUNT FILES IN A DIRECTORY request to Pocket
+
+    :param pocket:           pocketHandle returned from connect()
+    :param str dirname: name of directory to create in Pocket
+    :param str jobid:        id unique to this job, used to separate keyspace for job
+    :return: the Pocket dispatcher response
+    '''
+
+    if jobid:
+        jobid = "/" + jobid
+
+    if dirname:
+        dirname = jobid + "/" + dirname
+    else:
+        dirname = jobid
+
+    res = pocket.EnumerateWithReturn(dirname)
+    return res
