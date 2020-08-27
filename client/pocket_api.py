@@ -371,6 +371,8 @@ def list_dir(pocket: PocketDispatcher, dirname: str, jobid: str):
         jobid = "/" + jobid
 
     if dirname:
+        if dirname.startswith("/"):
+            dirname = dirname[1:]
         dirname = jobid + "/" + dirname
     else:
         dirname = jobid
