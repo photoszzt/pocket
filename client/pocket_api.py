@@ -382,10 +382,10 @@ def list_dir(pocket: PocketDispatcher, dirname: str, jobid: str):
     return res
 
 
-def path_exists(pocket: PocketDispatcher, path: str):
+def path_exists(pocket: PocketDispatcher, path: str, jobid: str):
     exists = True
     try:
-        lookup(pocket, path, "")
+        lookup(pocket, path, jobid)
     except RuntimeError as e:
         stre = str(e)
         if stre == 'lookup node failed':
@@ -397,6 +397,9 @@ def create_dirs(pocket, path: str, jobid: str):
     head, tail = os.path.split(path)
     if not tail:
         head, tail = os.path.split(head)
-    if head and tail and not path_exists(head):
+    if head and tail and not path_exists(pocket, head, jobid):
         create_dirs(pocket, head, jobid)
-    create_dir(pocket, path, jobid)
+    try:
+        create_dir(pocket, path, jobid)
+    except Exception:
+        pass
