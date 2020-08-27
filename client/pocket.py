@@ -5,7 +5,7 @@
 import socket
 import struct
 import libpocket
-from subprocess import call, Popen
+from libpocket import PocketDispatcher
 
 PORT = 2345
 HOSTNAME = "localhost"
@@ -46,7 +46,7 @@ def launch_dispatcher(crail_home_path):
     return
 
 
-def register_job(jobname, num_lambdas=0, capacityGB=0, peakMbps=0, latency_sensitive=1):
+def register_job(jobname: str, num_lambdas=0, capacityGB=0, peakMbps=0, latency_sensitive=1):
     # connect to controller
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((CONTROLLER_IP, CONTROLLER_PORT))
@@ -74,7 +74,7 @@ def register_job(jobname, num_lambdas=0, capacityGB=0, peakMbps=0, latency_sensi
     return jobid
 
 
-def deregister_job(jobid):
+def deregister_job(jobid: str):
     # connect to controller
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((CONTROLLER_IP, CONTROLLER_PORT))
@@ -100,7 +100,7 @@ def deregister_job(jobid):
     return err
 
 
-def connect(hostname, port):
+def connect(hostname: str, port: int):
     pocketHandle = libpocket.PocketDispatcher()
     res = pocketHandle.Initialize(hostname, port)
     if res != 0:
@@ -109,7 +109,8 @@ def connect(hostname, port):
     return pocketHandle
 
 
-def put(pocket, src_filename, dst_filename, jobid, PERSIST_AFTER_JOB=False):
+def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: str,
+        PERSIST_AFTER_JOB=False):
     '''
     Send a PUT request to Pocket to write key
 
@@ -129,12 +130,13 @@ def put(pocket, src_filename, dst_filename, jobid, PERSIST_AFTER_JOB=False):
     else:
         set_filename = jobid + "/" + dst_filename
 
-    res = pocket.PutFile(src_filename, set_filename, False)
+    res = pocket.PutFile(src_filename, set_filename, True)
 
     return res
 
 
-def put_buffer(pocket, src, dst_filename, jobid, PERSIST_AFTER_JOB=False):
+def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str, 
+               jobid: str, PERSIST_AFTER_JOB=False):
     '''
     Send a PUT request to Pocket to write key
 
@@ -159,7 +161,8 @@ def put_buffer(pocket, src, dst_filename, jobid, PERSIST_AFTER_JOB=False):
     return res
 
 
-def get(pocket, src_filename, dst_filename, jobid, DELETE_AFTER_READ=False):
+def get(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: str,
+        DELETE_AFTER_READ=False):
     '''
     Send a GET request to Pocket to read key
 
@@ -187,7 +190,8 @@ def get(pocket, src_filename, dst_filename, jobid, DELETE_AFTER_READ=False):
     return res
 
 
-def get_buffer(pocket, src_filename, dst, len, jobid, DELETE_AFTER_READ=False):
+def get_buffer(pocket: PocketDispatcher, src_filename: str, dst: str, len: int, jobid: str,
+               DELETE_AFTER_READ=False):
     '''
     Send a GET request to Pocket to read key
 
@@ -215,7 +219,8 @@ def get_buffer(pocket, src_filename, dst, len, jobid, DELETE_AFTER_READ=False):
     return res
 
 
-def get_buffer_bytes(pocket, src_filename, jobid, DELETE_AFTER_READ=False):
+def get_buffer_bytes(pocket: PocketDispatcher, src_filename: str, jobid: str,
+                     DELETE_AFTER_READ=False):
     '''
     Send a GET request to Pocket to read key
 
@@ -239,7 +244,7 @@ def get_buffer_bytes(pocket, src_filename, jobid, DELETE_AFTER_READ=False):
     return dst, res
 
 
-def lookup(pocket, src_filename, jobid):
+def lookup(pocket: PocketDispatcher, src_filename: str, jobid: str):
     '''
     Send a LOOKUP metadata request to Pocket to see if file exists
 
@@ -261,7 +266,7 @@ def lookup(pocket, src_filename, jobid):
     return res
 
 
-def delete(pocket, src_filename, jobid):
+def delete(pocket: PocketDispatcher, src_filename: str, jobid: str):
     '''
     Send a DEL request to Pocket to delete key
 
@@ -284,7 +289,7 @@ def delete(pocket, src_filename, jobid):
     return res
 
 
-def create_dir(pocket, src_filename, jobid):
+def create_dir(pocket: PocketDispatcher, src_filename: str, jobid: str):
     '''
     Send a CREATE DIRECTORY request to Pocket
 
@@ -307,7 +312,7 @@ def create_dir(pocket, src_filename, jobid):
     return res
 
 
-def count_files(pocket, dirname, jobid):
+def count_files(pocket: PocketDispatcher, dirname: str, jobid: str):
     '''
     Send a COUNT FILES IN A DIRECTORY request to Pocket
 
@@ -330,7 +335,7 @@ def count_files(pocket, dirname, jobid):
     return res
 
 
-def close(pocket):
+def close(pocket: PocketDispatcher):
     '''
     Send a CLOSE request to PocketFS
 
@@ -340,7 +345,7 @@ def close(pocket):
     return pocket.Close()  # TODO
 
 
-def list_dir(pocket, dirname, jobid):
+def list_dir(pocket: PocketDispatcher, dirname: str, jobid: str):
     '''
     Send a COUNT FILES IN A DIRECTORY request to Pocket
 
