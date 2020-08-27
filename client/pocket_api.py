@@ -115,15 +115,17 @@ def connect(hostname: str, port: int):
 
 
 def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: str,
-        PERSIST_AFTER_JOB=False):
+        PERSIST_AFTER_JOB=False, enumerable=True):
     '''
     Send a PUT request to Pocket to write key
 
     :param pocket:           pocketHandle returned from connect()
     :param str src_filename: name of local file containing data to PUT
     :param str dst_filename: name of file/key in Pocket which writing to
-    :param str jobid:        id unique to this job, used to separate keyspace for job
-    :param PERSIST_AFTER_JOB:optional hint, if True, data written to table persisted after job done
+    :param str jobid:        id unique to this job, used to separate
+                             keyspace for job
+    :param PERSIST_AFTER_JOB:optional hint, if True, data written
+                             to table persisted after job done
     :return: the Pocket dispatcher response
     '''
 
@@ -135,21 +137,24 @@ def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
     else:
         set_filename = jobid + "/" + dst_filename
 
-    res = pocket.PutFile(src_filename, set_filename, True)
+    print(f"pocket_api put: ${set_filename}")
+    res = pocket.PutFile(src_filename, set_filename, enumerable)
 
     return res
 
 
 def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str,
-               jobid: str, PERSIST_AFTER_JOB=False):
+               jobid: str, PERSIST_AFTER_JOB=False, enumerable=True):
     '''
     Send a PUT request to Pocket to write key
 
     :param pocket:           pocketHandle returned from connect()
     :param str src: 	   name of local object containing data to PUT
     :param str dst_filename: name of file/key in Pocket which writing to
-    :param str jobid:        id unique to this job, used to separate keyspace for job
-    :param PERSIST_AFTER_JOB:optional hint, if True, data written to table persisted after job done
+    :param str jobid:        id unique to this job, used to separate
+                             keyspace for job
+    :param PERSIST_AFTER_JOB:optional hint, if True, data written
+                             to table persisted after job done
     :return: the Pocket dispatcher response
     '''
 
@@ -161,7 +166,8 @@ def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str,
     else:
         set_filename = jobid + "/" + dst_filename
 
-    res = pocket.PutBuffer(src, set_filename, False)
+    print(f"pocket_api put_buffer: ${set_filename}")
+    res = pocket.PutBuffer(src, set_filename, enumerable)
 
     return res
 
@@ -368,5 +374,6 @@ def list_dir(pocket: PocketDispatcher, dirname: str, jobid: str):
     else:
         dirname = jobid
 
+    print(f"pocket api list_dir: {dirname}")
     res = pocket.EnumerateWithReturn(dirname)
     return res
