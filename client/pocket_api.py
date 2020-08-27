@@ -4,8 +4,8 @@
 
 import socket
 import struct
-import libpocket
-from libpocket import PocketDispatcher
+from . import libpocket
+from .libpocket import PocketDispatcher
 
 PORT = 2345
 HOSTNAME = "localhost"
@@ -135,7 +135,7 @@ def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
     return res
 
 
-def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str, 
+def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str,
                jobid: str, PERSIST_AFTER_JOB=False):
     '''
     Send a PUT request to Pocket to write key

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-mkdir -p /var/local/$USER/.faas/pocket_api
+sudo mkdir -p /var/local/$USER/.faas/pocket_api
 sudo cp $SCRIPT_DIR/build/client/libcppcrail.so \
     $SCRIPT_DIR/build/pocket/libpocket.so \
     $SCRIPT_DIR/pocket_api.py \
