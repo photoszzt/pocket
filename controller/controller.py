@@ -5,7 +5,7 @@ import math
 import pandas as pd
 from random import randint
 import socket
-import pocket
+import pocket_api
 import pocket_metadata_cmds as ioctlcmd
 from os import path
 from subprocess import Popen, PIPE
@@ -624,10 +624,10 @@ def handle_register_job(reader, writer):
   print("received hints ", jobid, num_lambdas, jobGB, peakMbps, latency_sensitive)
   # create dir named jobid
   # NOTE: this is blocking but we are not yielding
-  createdirsock = pocket.connect(NAMENODE_IP, NAMENODE_PORT)
+  createdirsock = pocket_api.connect(NAMENODE_IP, NAMENODE_PORT)
   if createdirsock is None:
     return
-  ret = pocket.create_dir(createdirsock, None, jobid)
+  ret = pocket_api.create_dir(createdirsock, None, jobid)
 
   if jobGB == 0 or peakMbps == 0:
     jobGB, peakMbps = compute_GB_Mbps_with_hints(num_lambdas, jobGB, peakMbps, latency_sensitive)
@@ -694,11 +694,11 @@ def handle_deregister_job(reader, writer):
   if err == 0:
     # delete dir named jobid
     # NOTE: this is blocking but we are not yielding
-    createdirsock = pocket.connect(NAMENODE_IP, NAMENODE_PORT)
+    createdirsock = pocket_api.connect(NAMENODE_IP, NAMENODE_PORT)
     if createdirsock is None:
       return
-    pocket.delete(createdirsock, None, "/" + jobid)
-    #pocket.close(createdirsock)
+    pocket_api.delete(createdirsock, None, "/" + jobid)
+    #pocket_api.close(createdirsock)
 
   print(datanode_alloc)
 

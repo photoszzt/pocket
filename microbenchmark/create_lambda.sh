@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-zip -r deploy.zip latency.py pocket.py libc.so.6 libstdc++.so.6 libpocket.so libcppcrail.so libboost_python-py35.so.1.58.0
+zip -r deploy.zip latency.py pocket_api.py libc.so.6 libstdc++.so.6 libpocket.so libcppcrail.so libboost_python-py35.so.1.58.0
 
 aws lambda create-function \
     --function-name pocket_latency_test \

@@ -1,6 +1,6 @@
 import os
 import time
-import pocket
+import pocket_api
 import random
 import string
 import subprocess
@@ -9,7 +9,7 @@ import subprocess
 def pocket_write(p, jobid, iter, src_filename):
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        r = pocket.put(p, src_filename, dst_filename, jobid)
+        r = pocket_api.put(p, src_filename, dst_filename, jobid)
         if r != 0:
             raise Exception("put failed: " + dst_filename)
 
@@ -17,7 +17,7 @@ def pocket_write(p, jobid, iter, src_filename):
 def pocket_read(p, jobid, iter, src_filename):
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        r = pocket.get(p, dst_filename, src_filename, jobid)
+        r = pocket_api.get(p, dst_filename, src_filename, jobid)
         if r != 0:
             raise Exception("get failed: " + dst_filename)
 
@@ -25,7 +25,7 @@ def pocket_read(p, jobid, iter, src_filename):
 def pocket_lookup(p, jobid, iter):
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        r = pocket.lookup(p, dst_filename, jobid)
+        r = pocket_api.lookup(p, dst_filename, jobid)
         if r != 0:
             raise Exception("lookup failed: " + dst_filename)
 
@@ -33,7 +33,7 @@ def pocket_lookup(p, jobid, iter):
 def pocket_write_buffer(p, jobid, iter, src, size):
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        r = pocket.put_buffer(p, src, dst_filename, jobid)
+        r = pocket_api.put_buffer(p, src, dst_filename, jobid)
         if r != 0:
             raise Exception("put buffer failed: " + dst_filename)
 
@@ -42,7 +42,7 @@ def pocket_read_buffer(p, jobid, iter, text_back_tmp, size):
     text_back = " "*size
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        r = pocket.get_buffer(p, dst_filename, text_back, size, jobid)
+        r = pocket_api.get_buffer(p, dst_filename, text_back, size, jobid)
         if r != 0:
             raise Exception("get buffer failed: " + dst_filename)
 
@@ -50,7 +50,7 @@ def pocket_read_buffer(p, jobid, iter, text_back_tmp, size):
 def pocket_read_buffer_bytes(p, jobid, iter):
     for i in range(iter):
         dst_filename = 'tmp'+'-'+str(i)
-        _ = pocket.get_buffer_bytes(p, dst_filename, jobid)
+        _ = pocket_api.get_buffer_bytes(p, dst_filename, jobid)
 
 
 def rand_str(slen):
@@ -71,11 +71,11 @@ def lambda_handler(event, context):
         f.write(text)
 
     # connect to pocket
-    p = pocket.connect(namenode_ip, 9070)
+    p = pocket_api.connect(namenode_ip, 9070)
 
     # test read/write through buffer
     dir = jobid + "microbenchmark" + rand_str(4)
-    pocket.create_dir(p, dir, "")
+    pocket_api.create_dir(p, dir, "")
     jobid = dir
 
     t0 = time.time()
@@ -89,13 +89,13 @@ def lambda_handler(event, context):
     print("latency (us) = " + str((t1-t0)/iter*1e6))
     print("==========================================")
 
-    list_dir = pocket.list_dir(p, None, jobid)
+    list_dir = pocket_api.list_dir(p, None, jobid)
     list_dir_list = [f for f in list_dir]
     print(list_dir_list)
-    count = pocket.count_files(p, None, jobid)
+    count = pocket_api.count_files(p, None, jobid)
     print(f'num files: {count}')
     try:
-        list_file = pocket.list_dir(p, 'tmp-0', jobid)
+        list_file = pocket_api.list_dir(p, 'tmp-0', jobid)
     except RuntimeError as e:
         stre = str(e)
         if stre != 'node is not a directory':

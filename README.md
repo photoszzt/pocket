@@ -19,7 +19,7 @@ cd ../pocket-core
 mvn -DskipTests install 	# builds crail-1.0-bin.tar.gz
 ```
 
-For deployment, copy the shared libraries libcppcrail.so and libpocket.so together with the python scripts pocket.py, controller.py and pocket_metadata_cmds.py to one directory, and un-tar crail-1.0-bin.tar.gz into a different directory. pocket.py is the client interface applications use to store and share ephemeral data between function invocations. controller.py is the Pocket controller responsible for managing storage resources in an elastic manner. crail-1.0-bin contains the server side of the Pocket storage platform. 
+For deployment, copy the shared libraries libcppcrail.so and libpocket.so together with the python scripts pocket_api.py, controller.py and pocket_metadata_cmds.py to one directory, and un-tar crail-1.0-bin.tar.gz into a different directory. pocket_api.py is the client interface applications use to store and share ephemeral data between function invocations. controller.py is the Pocket controller responsible for managing storage resources in an elastic manner. crail-1.0-bin contains the server side of the Pocket storage platform. 
 
 ## Running Pocket
 
