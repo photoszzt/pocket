@@ -1,11 +1,16 @@
 #######################################################
 ##  Python library/API to communicate with Pocket    ##
 #######################################################
-
 import socket
 import struct
-from . import libpocket
-from .libpocket import PocketDispatcher
+try:
+    from . import libpocket
+except ImportError:
+    import libpocket
+try:
+    from .libpocket import PocketDispatcher
+except ImportError:
+    from libpocket import PocketDispatcher
 
 PORT = 2345
 HOSTNAME = "localhost"
