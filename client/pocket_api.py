@@ -3,6 +3,7 @@
 #######################################################
 import socket
 import struct
+import os
 try:
     from . import libpocket
 except ImportError:
@@ -358,7 +359,7 @@ def close(pocket: PocketDispatcher):
 
 def list_dir(pocket: PocketDispatcher, dirname: str, jobid: str):
     '''
-    Send a COUNT FILES IN A DIRECTORY request to Pocket
+    Send a ENUMERATE FILES IN A DIRECTORY request to Pocket
 
     :param pocket:           pocketHandle returned from connect()
     :param str dirname: name of directory to create in Pocket
@@ -377,3 +378,23 @@ def list_dir(pocket: PocketDispatcher, dirname: str, jobid: str):
     print(f"pocket api list_dir: {dirname}")
     res = pocket.EnumerateWithReturn(dirname)
     return res
+
+
+def path_exists(pocket: PocketDispatcher, path: str):
+    exists = True
+    try:
+        lookup(pocket, path, "")
+    except RuntimeError as e:
+        stre = str(e)
+        if stre == 'lookup node failed':
+            exists = False
+    return exists
+
+
+def create_dirs(pocket, path: str, jobid: str):
+    head, tail = os.path.split(path)
+    if not tail:
+        head, tail = os.path.split(head)
+    if head and tail and not path_exists(head):
+        create_dirs(pocket, head, jobid)
+    create_dir(pocket, path, jobid)
