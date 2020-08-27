@@ -2,5 +2,6 @@ libboost_python3-py36.so.1.65.1
 libcppcrail.so
 libpocket.so
 pocket_api.py
+pocket.py
 *.swp
 __pycache__
