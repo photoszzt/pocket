@@ -43,6 +43,7 @@ echo "export POCKET_VPC_PRIVATE_NETWORK_CIDR=\"${privateSubnetCidr}\"" >> $SCRIP
 echo "export POCKET_VPC_PUBLIC_NETWORK_CIDR=\"${publicSubnetCidr}\"" >> $SCRIPT_DIR/env.sh
 echo "export POCKET_AWS_ZONE=\"${privateSubnetAz}\"" >> $SCRIPT_DIR/env.sh
 echo "export POCKET_NAT_ID=\"${vpcNatGatewayId}\""  >> $SCRIPT_DIR/env.sh
+echo "export BASTIONIP=\"${BASTIONIP}\"" >>  $SCRIPT_DIR/env.sh
 chmod +x $SCRIPT_DIR/env.sh
 
 echo "{" > $SCRIPT_DIR/pocket-k8s-config.json
@@ -55,7 +56,8 @@ echo "  \"POCKET_VPC_NETWORK_CIDR\": \"${pocketVPCNetworkCidr}\"," >> $SCRIPT_DI
 echo "  \"POCKET_VPC_PRIVATE_NETWORK_CIDR\": \"${privateSubnetCidr}\"," >> $SCRIPT_DIR/pocket-k8s-config.json
 echo "  \"POCKET_VPC_PUBLIC_NETWORK_CIDR\": \"${publicSubnetCidr}\"," >> $SCRIPT_DIR/pocket-k8s-config.json
 echo "  \"POCKET_AWS_ZONE\": \"${privateSubnetAz}\"," >> $SCRIPT_DIR/pocket-k8s-config.json
-echo "  \"POCKET_NAT_ID\": \"${vpcNatGatewayId}\""  >> $SCRIPT_DIR/pocket-k8s-config.json
+echo "  \"POCKET_NAT_ID\": \"${vpcNatGatewayId}\","  >> $SCRIPT_DIR/pocket-k8s-config.json
+echo "  \"BASTIONIP\": \"${BASTIONIP}\"" >> $SCRIPT_DIR/pocket-k8s-config.json
 echo "}" >> $SCRIPT_DIR/pocket-k8s-config.json
 
 PROXY="ssh -W %h:%p -i $keyFile ubuntu@$BASTIONIP"

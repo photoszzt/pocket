@@ -1,4 +1,5 @@
 import * as awsx from "@pulumi/awsx";
+import * as aws from "@pulumi/aws";
 
 const vpc_name = "pocket-aws";
 export const pocketVPCNetworkCidr = "10.1.0.0/16";
@@ -39,9 +40,19 @@ pocketRelaxSg.createIngressRule("relaxSsh-access", {
     ports: { protocol: "tcp", fromPort: 22 },
     description: "allow ssh access"
 });
-pocketRelaxSg.createIngressRule("pocketRelaxInternal-access", {
+pocketRelaxSg.createIngressRule("pocketDefaultSg-access", {
     location: { sourceSecurityGroupId: defaultSgId },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
+    description: "allow all internal inbound access"
+})
+pocketRelaxSg.createIngressRule("relaxSg-access", {
+    location: { sourceSecurityGroupId: pocketRelaxSg.id },
+    ports: { protocol: "-1", fromPort: 0, toPort: 0 },
+    description: "allow all internal inbound access"
+})
+pocketRelaxSg.createIngressRule("relaxSg-https-access", {
+    location: { cidrBlocks:  [ "0.0.0.0/0" ]},
+    ports: { protocol: "tcp", fromPort: 443 },
     description: "allow all internal inbound access"
 })
 pocketRelaxSg.createEgressRule("relax-outbound-access", {
@@ -68,7 +79,7 @@ vmSg.createIngressRule("vmSsh-access", {
     ports: { protocol: "tcp", fromPort: 22 },
     description: "allow ssh access"
 });
-vmSg.createIngressRule("vmInternal-access", {
+vmSg.createIngressRule("vmPocketDefaultSg-access", {
     location: { sourceSecurityGroupId: defaultSgId },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
     description: "allow all internal inbound access"
@@ -93,3 +104,10 @@ export const publicSubnetId = vpcPublicSubnets.then(
 export const bastionSgId = bastionSg.id;
 export const vmSgId = vmSg.id;
 export const pocketRelaxSgId = pocketRelaxSg.id;
+
+const defaultVPC = awsx.ec2.Vpc.getDefault();
+const peering = new aws.ec2.VpcPeeringConnection("peering-for-efs", {
+    peerVpcId: defaultVPC.id,
+    vpcId: POCKET_VPC_ID,
+    autoAccept: true,
+});
