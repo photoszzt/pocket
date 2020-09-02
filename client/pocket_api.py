@@ -193,8 +193,7 @@ def get(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
 
     res = pocket.GetFile(get_filename, dst_filename)
     if res != 0:
-        print("GET failed!")
-        return res
+        raise Exception(f"GET {get_filename} to {dst_filename} failed!")
 
     if DELETE_AFTER_READ:
         res = delete(pocket, src_filename, jobid)
@@ -222,8 +221,7 @@ def get_buffer(pocket: PocketDispatcher, src_filename: str, dst: str, len: int, 
 
     res = pocket.GetBuffer(dst, len, get_filename)
     if res != 0:
-        print("GET BUFFER failed!")
-        return res
+        raise Exception(f"GET BUFFER {get_filename} failed!")
 
     if DELETE_AFTER_READ:
         res = delete(pocket, src_filename, jobid)
