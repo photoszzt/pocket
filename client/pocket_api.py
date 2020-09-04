@@ -116,7 +116,7 @@ def connect(hostname: str, port: int):
 
 
 def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: str,
-        PERSIST_AFTER_JOB=False, enumerable=True):
+        PERSIST_AFTER_JOB=False, enumerable=False):
     '''
     Send a PUT request to Pocket to write key
 
@@ -145,7 +145,7 @@ def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
 
 
 def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str,
-               jobid: str, PERSIST_AFTER_JOB=False, enumerable=True):
+               jobid: str, PERSIST_AFTER_JOB=False, enumerable=False):
     '''
     Send a PUT request to Pocket to write key
 
@@ -174,7 +174,7 @@ def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str,
 
 
 def get(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: str,
-        DELETE_AFTER_READ=False):
+        DELETE_AFTER_READ=True):
     '''
     Send a GET request to Pocket to read key
 
@@ -202,7 +202,7 @@ def get(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
 
 
 def get_buffer(pocket: PocketDispatcher, src_filename: str, dst: str, len: int, jobid: str,
-               DELETE_AFTER_READ=False):
+               DELETE_AFTER_READ=True):
     '''
     Send a GET request to Pocket to read key
 
@@ -230,7 +230,7 @@ def get_buffer(pocket: PocketDispatcher, src_filename: str, dst: str, len: int, 
 
 
 def get_buffer_bytes(pocket: PocketDispatcher, src_filename: str, jobid: str,
-                     DELETE_AFTER_READ=False):
+                     DELETE_AFTER_READ=True):
     '''
     Send a GET request to Pocket to read key
 
