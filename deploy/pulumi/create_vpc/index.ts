@@ -5,10 +5,10 @@ const vpc_name = "pocket-aws";
 export const pocketVPCNetworkCidr = "10.1.0.0/16";
 export const publicSubnetName = "pocket-kube-public"
 export const privateSubnetName = "pocket-kube-private"
-export const publicSubnetCidr = "10.1.129.32/27"
+export const publicSubnetCidr = "10.1.128.0/17"
 export const privateSubnetCidr = "10.1.0.0/17"
-export const publicSubnetAz="us-east-1c"
-export const privateSubnetAz="us-east-1c"
+export const publicSubnetAz="us-east-1f"
+export const privateSubnetAz="us-east-1f"
 const vpc = new awsx.ec2.Vpc(vpc_name, {
     cidrBlock: pocketVPCNetworkCidr,
     subnets: [
@@ -104,10 +104,3 @@ export const publicSubnetId = vpcPublicSubnets.then(
 export const bastionSgId = bastionSg.id;
 export const vmSgId = vmSg.id;
 export const pocketRelaxSgId = pocketRelaxSg.id;
-
-const defaultVPC = awsx.ec2.Vpc.getDefault();
-const peering = new aws.ec2.VpcPeeringConnection("peering-for-efs", {
-    peerVpcId: defaultVPC.id,
-    vpcId: POCKET_VPC_ID,
-    autoAccept: true,
-});

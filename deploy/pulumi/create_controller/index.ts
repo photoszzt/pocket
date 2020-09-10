@@ -36,6 +36,8 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 cd /home/ubuntu
 git clone https://github.com/photoszzt/pocket.git
+cd pocket/client && ./build.sh
+cd -
 sudo chown -R ubuntu:ubuntu pocket
 
 sudo apt install -y python3
