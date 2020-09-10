@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: DaemonSet
+metadata:
+  name: pocket-stat
+spec:
+  metadata:
+    labels:
+      app: pocket-stat
+    spec:
+      hostNetwork: true
+      privileged: true
+      containers:
+      - name: pocket-stat
+        image: 957150784800.dkr.ecr.us-east-1.amazonaws.com/storage_stats
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 50056
+        volumes:
+        - name: dev
+          hostPath:
+            path: /var/local
+            type: Directory
+        nodeSelector:
+          pocketnodetype: "dram"
