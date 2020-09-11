@@ -22,7 +22,7 @@ def main():
         # use safe load to disable warnings
         # https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation
         dep = yaml.safe_load(f)
-        k8s_beta = client.ExtensionsV1beta1Api()
+        k8s_beta = client.AppsV1Api()
         resp = k8s_beta.create_namespaced_deployment(
             body=dep, namespace="default")
         print("Deployment created. status='%s'" % str(resp.status))
