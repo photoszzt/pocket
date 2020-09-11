@@ -1,8 +1,11 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: pocket-stat
 spec:
+  selector:
+    matchLabels:
+      app: pocket-stat
   template:
     metadata:
       labels:
@@ -10,21 +13,22 @@ spec:
     spec:
       hostNetwork: true
       privileged: true
+      imagePullPolicy: Always
       containers:
       - name: pocket-stat
         image: photoszzt/storage_stats
         securityContext:
           privileged: true
           allowPrivilegeEscalation: true
-        volumeMounts:
-        - mountPath: /var/local/
-          name: varlocal
         ports:
         - containerPort: 50056
+        volumeMounts:
+        - mountPath: /var/log
+          name: var-log
       volumes:
-      - name: varlocal
-        hostPath:
-          path: /var/local/
+      - name: var-log
+        hostPath: 
+          path: /var/log
           type: Directory
       nodeSelector:
         pocketnodetype: "dram"
