@@ -23,12 +23,12 @@ spec:
         ports:
         - containerPort: 50056
         volumeMounts:
-        - mountPath: /var/log
+        - mountPath: /var/log/pocket-stat
           name: var-log
       volumes:
       - name: var-log
         hostPath: 
-          path: /var/log
+          path: /home/admin/
           type: Directory
       nodeSelector:
         pocketnodetype: "dram"
