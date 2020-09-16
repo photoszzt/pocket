@@ -1,4 +1,8 @@
 import asyncio
+import os
+import sys
+import signal
+import argparse
 import pocket_metadata_cmds as ioctlcmd
 
 
@@ -17,7 +21,7 @@ avg_util = {'cpu': 0, 'net': 0, 'dram': 0, 'flash': 0, 'net_aggr':0, 'dram_total
 
 
 @asyncio.coroutine
-def get_capacity_stats_periodically(sock):
+def get_capacity_stats_periodically(sock, fp):
     while True:
         yield from asyncio.sleep(GET_CAPACITY_STATS_INTERVAL)
         for tier in STORAGE_TIERS:
@@ -26,6 +30,7 @@ def get_capacity_stats_periodically(sock):
                 avg_usage = (all_blocks - free_blocks)*100.0 / all_blocks
                 print("Capacity usage for Tier", tier, ":", free_blocks, "free blocks out of", \
                        all_blocks, "(", avg_usage, "% )")
+                fp.write("{},{},{},".format(tier, all_blocks, free_blocks))
             else:
                 avg_usage = -1
             # update global avg_util dictionary
@@ -33,9 +38,33 @@ def get_capacity_stats_periodically(sock):
                 avg_util['dram'] = avg_usage
                 avg_util['dram_totalGB'] = all_blocks * BLOCKSIZE * 1.0 / 1e9
                 avg_util['dram_usedGB'] = (all_blocks - free_blocks) * BLOCKSIZE * 1.0 / 1e9
+                print("dram total: {} GB, used: {} GB".format(avg_util['dram_totalGB'], avg_util['dram_usedGB']))
+        fp.write("\n")
+        fp.flush()
+
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("stats")
+    args = parser.parse_args()
+    fp = open(args.stats, 'w')
+
+    #subprocess.call("wall -n starting to collect {}".format(args.ofile))
+
+    def sig_int(signal, frame):
+        fp.flush()
+        os.fsync(fp.fileno())
+        fp.close()
+        #subprocess.call("wall -n done collecting")
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_int)
+
+    loop = asyncio.get_event_loop()
+    metadata_socket = ioctlcmd.connect_until_succeed(NAMENODE_IP, NAMENODE_PORT)
+    loop.run_until_complete(get_capacity_stats_periodically(metadata_socket, fp))
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    metadata_socket = ioctlcmd.connect_until_succeed(NAMENODE_IP, NAMENODE_PORT)
-    loop.run_until_complete(get_capacity_stats_periodically(metadata_socket))
+    main()
