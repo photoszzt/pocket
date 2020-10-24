@@ -4,6 +4,7 @@
 import socket
 import struct
 import os
+from typing import Union
 try:
     from . import libpocket
 except ImportError:
@@ -144,7 +145,7 @@ def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
     return res
 
 
-def put_buffer(pocket: PocketDispatcher, src: str, dst_filename: str,
+def put_buffer(pocket: PocketDispatcher, src: Union[str, bytes], dst_filename: str,
                jobid: str, PERSIST_AFTER_JOB=False, enumerable=False):
     '''
     Send a PUT request to Pocket to write key
