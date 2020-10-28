@@ -139,7 +139,6 @@ def put(pocket: PocketDispatcher, src_filename: str, dst_filename: str, jobid: s
     else:
         set_filename = jobid + "/" + dst_filename
 
-    print(f"pocket_api put: {set_filename}")
     res = pocket.PutFile(src_filename, set_filename, enumerable)
 
     return res
@@ -168,7 +167,6 @@ def put_buffer(pocket: PocketDispatcher, src: Union[str, bytes], dst_filename: s
     else:
         set_filename = jobid + "/" + dst_filename
 
-    print(f"pocket_api put_buffer: {set_filename}")
     res = pocket.PutBuffer(src, set_filename, enumerable)
 
     return res
