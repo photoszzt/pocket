@@ -19,11 +19,22 @@ int main(int argc, char *argv[])
         names.push_back(tmp);
     }
     unsigned int size = 1024 * 1024 * 1024;
-    char data[size];
+    string data;
+    data.reserve(size);
+    uint8_t counter = 0;
+    for (unsigned int i = 0; i < size; i++)
+    {
+        data.push_back(counter);
+        if (counter == 127)
+        {
+            counter = 0;
+        }
+        counter += 1;
+    }
     int res = -1;
     for (std::string n : names)
     {
-        res = dispatcher.PutBuffer(data, n, false);
+        res = dispatcher.PutBuffer(data.data(), n, false);
     }
     for (std::string n : names)
     {
