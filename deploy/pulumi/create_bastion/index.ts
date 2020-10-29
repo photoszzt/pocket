@@ -7,8 +7,8 @@ const org = config.require('org')
 const keyName = config.require('keyName')
 const stack = pulumi.getStack()
 const vpc = new pulumi.StackReference(`${org}/create_vpc/${stack}`);
-const publicSubnetAvailabilityZone = vpc.getOutput("publicSubnetAz");
-const publicSubnetId = vpc.getOutput("publicSubnetId")
+const publicSubnetAvailabilityZone = vpc.getOutput("publicSubnetAz1");
+const publicSubnetId = vpc.getOutput("publicSubnetId1")
 const bastionSgId = vpc.getOutput("bastionSgId")
 
 const bastion = new aws.ec2.Instance("bastion", {

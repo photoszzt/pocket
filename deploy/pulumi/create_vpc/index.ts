@@ -5,38 +5,58 @@ const vpc_name = "pocket-aws";
 export const pocketVPCNetworkCidr = "10.1.0.0/16";
 export const publicSubnetName = "pocket-kube-public"
 export const privateSubnetName = "pocket-kube-private"
-export const publicSubnetCidr = "10.1.128.0/17"
-export const privateSubnetCidr = "10.1.0.0/17"
-export const publicSubnetAz="us-east-1f"
-export const privateSubnetAz="us-east-1f"
+export const publicSubnetCidr1 = "10.1.128.0/18"
+export const publicSubnetCidr2 = "10.1.192.0/18"
+export const privateSubnetCidr1 = "10.1.0.0/18"
+export const privateSubnetCidr2 = "10.1.64.0/18"
+export const publicSubnetAz1 = "us-east-1d"
+export const publicSubnetAz2 = "us-east-1b"
+export const privateSubnetAz1 = "us-east-1d"
+export const privateSubnetAz2 = "us-east-1b"
 const vpc = new awsx.ec2.Vpc(vpc_name, {
     cidrBlock: pocketVPCNetworkCidr,
     subnets: [
         {
             type: "public",
-            name: publicSubnetName,
+            name: publicSubnetName + "1",
             location: {
-                availabilityZone: publicSubnetAz,
-                cidrBlock: publicSubnetCidr,
+                availabilityZone: publicSubnetAz1,
+                cidrBlock: publicSubnetCidr1,
+            },
+        },
+        {
+            type: "public",
+            name: publicSubnetName + "2",
+            location: {
+                availabilityZone: publicSubnetAz2,
+                cidrBlock: publicSubnetCidr2,
             },
         },
         {
             type: "private",
-            name: privateSubnetName,
+            name: privateSubnetName + "1",
             location: {
-                availabilityZone: privateSubnetAz,
-                cidrBlock: privateSubnetCidr,
+                availabilityZone: privateSubnetAz1,
+                cidrBlock: privateSubnetCidr1,
+            },
+        },
+        {
+            type: "private",
+            name: privateSubnetName + "2",
+            location: {
+                availabilityZone: privateSubnetAz2,
+                cidrBlock: privateSubnetCidr2,
             },
         }
     ],
     numberOfNatGateways: 1,
-    numberOfAvailabilityZones: 1,
+    numberOfAvailabilityZones: 2,
 });
 let defaultSgId = vpc.vpc.defaultSecurityGroupId
 // this security group is for vm and lambda; the name is chosen in the patch-cluster.py script
 const pocketRelaxSg = new awsx.ec2.SecurityGroup('pocket-kube-relax', { vpc });
 pocketRelaxSg.createIngressRule("relaxSsh-access", {
-    location: { cidrBlocks: [ "0.0.0.0/0" ]},
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "tcp", fromPort: 22 },
     description: "allow ssh access"
 });
@@ -51,31 +71,31 @@ pocketRelaxSg.createIngressRule("relaxSg-access", {
     description: "allow all internal inbound access"
 })
 pocketRelaxSg.createIngressRule("relaxSg-https-access", {
-    location: { cidrBlocks:  [ "0.0.0.0/0" ]},
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "tcp", fromPort: 443 },
     description: "allow all internal inbound access"
 })
 pocketRelaxSg.createEgressRule("relax-outbound-access", {
-    location: { cidrBlocks: [ "0.0.0.0/0" ] },
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
     description: "allow outbound access to anywhere",
 });
 
 const bastionSg = new awsx.ec2.SecurityGroup('pocket-aws-bastion', { vpc });
 bastionSg.createIngressRule("ssh-access", {
-    location: { cidrBlocks: [ "0.0.0.0/0" ]},
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "tcp", fromPort: 22 },
     description: "allow ssh access"
 });
 bastionSg.createEgressRule("outbound-access", {
-    location: { cidrBlocks: [ "0.0.0.0/0" ] },
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
     description: "allow outbound access to anywhere",
 });
 
 const vmSg = new awsx.ec2.SecurityGroup('vm', { vpc });
 vmSg.createIngressRule("vmSsh-access", {
-    location: { cidrBlocks: [ "0.0.0.0/0" ]},
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "tcp", fromPort: 22 },
     description: "allow ssh access"
 });
@@ -85,7 +105,7 @@ vmSg.createIngressRule("vmPocketDefaultSg-access", {
     description: "allow all internal inbound access"
 })
 vmSg.createEgressRule("vmOutbound-access", {
-    location: { cidrBlocks: [ "0.0.0.0/0" ] },
+    location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
     description: "allow outbound access to anywhere",
 });
@@ -96,10 +116,16 @@ const vpcPublicSubnets = vpc.publicSubnets;
 export const vpcNatGatewayId = vpc.natGateways.then(
     natGateways => natGateways[0]["natGateway"]["id"]
 );
-export const privateSubnetId = vpcPrivateSubnets.then(
+export const privateSubnetId1 = vpcPrivateSubnets.then(
     privateSubnets => privateSubnets[0]["subnet"]["id"]);
-export const publicSubnetId = vpcPublicSubnets.then(
+export const privateSubnetId2 = vpcPrivateSubnets.then(
+    privateSubnets => privateSubnets[1]["subnet"]["id"]);
+
+export const publicSubnetId1 = vpcPublicSubnets.then(
     publicSubnets => publicSubnets[0]["subnet"]["id"]
+);
+export const publicSubnetId2 = vpcPublicSubnets.then(
+    publicSubnets => publicSubnets[1]["subnet"]["id"]
 );
 export const bastionSgId = bastionSg.id;
 export const vmSgId = vmSg.id;
