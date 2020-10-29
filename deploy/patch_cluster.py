@@ -102,8 +102,9 @@ def prep_i2instances(private_subnetid, node_groupid):
 
 def add_namenode_eni():
     # get subnet id for private subnet
-    cmd = "aws ec2 describe-subnets --filters Name=tag:Name,Values='pocket-kube-private' --query \"Subnets[*].SubnetId\""
+    cmd = "aws ec2 describe-subnets --filters Name=tag:Name,Values='pocket-kube-private1' --query \"Subnets[*].SubnetId\""
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
+    print(out)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     private_subnetid = re.search(pattern, out).group().strip('\"')
 
@@ -143,7 +144,7 @@ def add_namenode_eni():
 
 def add_namenode_eni():
     # get subnet id for private subnet
-    cmd = "aws ec2 describe-subnets --filters Name=tag:Name,Values='pocket-kube-private' --query \"Subnets[*].SubnetId\""
+    cmd = "aws ec2 describe-subnets --filters Name=tag:Name,Values='pocket-kube-private1' --query \"Subnets[*].SubnetId\""
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     private_subnetid = re.search(pattern, out).group().strip('\"')
@@ -185,7 +186,7 @@ def add_namenode_eni():
 
 def add_lambda_security_group_ingress_rule():
     # get group id for pocket-kubernetes-lax security group 
-    cmd = "aws ec2 describe-security-groups --filters Name=group-name,Values='*pocket-kube-relax*' --query \"SecurityGroups[*].GroupId\""  
+    cmd = "aws ec2 describe-security-groups --filters Name=group-name,Values='*pocket-kube-relax-6ab*' --query \"SecurityGroups[*].GroupId\""  
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     pocket_lax_groupid = re.search(pattern, out).group().strip('\"')
