@@ -163,6 +163,20 @@ docker run -it --net=host --privileged anakli/pocket-shell
 # ./bin/crail iobench -t write -f /test.data -s 4096 -k 100 -w 0
 ```
 
+## Update cluster size
+```bash
+# For example, update number of dram node from 3 to 4
+# First, find the name of the instance group you want to modify
+kops get ig --state s3://<state store>
+
+# In our example, we will modify dram-nodes
+kops edit ig dram-nodes --state s3://<state store>
+# the above command will open up the spec with editor. Edit the size and save
+
+# then update the cluster
+kops update cluster --state s3://<state store> --yes
+```
+
 ## Tearing down the kubernetes cluster
 
 Kops will delete all the resources it created (security groups, autoscaling groups, volumes, instances, etc). However, we first need to delete the secondary interface we created for the metadata node (run the python script). 
