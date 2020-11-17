@@ -2,6 +2,7 @@ import * as awsx from "@pulumi/awsx";
 import * as aws from "@pulumi/aws";
 
 const vpc_name = "pocket-aws";
+const region = "us-east-1"
 export const pocketVPCNetworkCidr = "10.1.0.0/16";
 export const publicSubnetName = "pocket-kube-public"
 export const privateSubnetName = "pocket-kube-private"
@@ -108,6 +109,11 @@ vmSg.createEgressRule("vmOutbound-access", {
     location: { cidrBlocks: ["0.0.0.0/0"] },
     ports: { protocol: "-1", fromPort: 0, toPort: 0 },
     description: "allow outbound access to anywhere",
+});
+
+const s3 = new aws.ec2.VpcEndpoint("s3", {
+    vpcId: vpc.id,
+    serviceName: "com.amazonaws." + region + ".s3",
 });
 
 export const POCKET_VPC_ID = vpc.id;
