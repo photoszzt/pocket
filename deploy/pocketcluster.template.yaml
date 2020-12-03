@@ -14,13 +14,9 @@ spec:
   configBase: {{.KOPS_STATE_STORE}}/pocketcluster.k8s.local
   etcdClusters:
   - etcdMembers:
-    - instanceGroup: master-{{.POCKET_AWS_ZONE1}}
+    - instanceGroup: master-{{.POCKET_AWS_ZONE}}
       name: c
     name: main
-  - etcdMembers:
-    - instanceGroup: master-{{.POCKET_AWS_ZONE1}}
-      name: c
-    name: events
   iam:
     allowContainerRegistry: true
     legacy: false
@@ -36,22 +32,16 @@ spec:
   sshAccess:
   - 0.0.0.0/0
   subnets:
-  - cidr: {{.POCKET_VPC_PRIVATE_NETWORK_CIDR1}}
-    name: pocket-kube-private1
-    type: Private
-    zone: {{.POCKET_AWS_ZONE1}}
-    id: {{.POCKET_VPC_PRIVATE_SUBNET_ID1}}
-    egress: {{.POCKET_NAT_ID}}
-  - cidr: {{.POCKET_VPC_PUBLIC_NETWORK_CIDR1}}
-    name: pocket-kube-public1
+  - cidr: {{.POCKET_VPC_PUBLIC_NETWORK_CIDR}}
+    name: pocket-kube-public
     type: Public
-    zone: {{.POCKET_AWS_ZONE1}}
-    id: {{.POCKET_VPC_PUBLIC_SUBNET_ID1}}
+    zone: {{.POCKET_AWS_ZONE}}
+    id: {{.POCKET_VPC_PUBLIC_SUBNET_ID}}
   topology:
     dns:
       type: Public
-    masters: private
-    nodes: private
+    masters: public
+    nodes: public
 
 ---
 
@@ -61,7 +51,7 @@ metadata:
   creationTimestamp: null
   labels:
     kops.k8s.io/cluster: pocketcluster.k8s.local
-  name: master-{{.POCKET_AWS_ZONE1}}
+  name: master-{{.POCKET_AWS_ZONE}}
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20
   # image: 099720109477/ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20200907
@@ -69,10 +59,10 @@ spec:
   maxSize: 1
   minSize: 1
   nodeLabels:
-    kops.k8s.io/instancegroup: master-{{.POCKET_AWS_ZONE1}}
+    kops.k8s.io/instancegroup: master-{{.POCKET_AWS_ZONE}}
   role: Master
   subnets:
-  - pocket-kube-private1
+  - pocket-kube-public
 
 ---
 
@@ -96,7 +86,7 @@ spec:
   rootVolumeSize: 12
   role: Node
   subnets:
-  - pocket-kube-private1
+  - pocket-kube-public
 
 ---
 
@@ -120,7 +110,7 @@ spec:
   rootVolumeSize: 12
   role: Node
   subnets:
-  - pocket-kube-private1
+  - pocket-kube-public
 
 ---
 
@@ -145,7 +135,7 @@ spec:
   rootVolumeSize: 15
   role: Node
   subnets:
-  - pocket-kube-private1
+  - pocket-kube-public
 
 ---
 
@@ -170,7 +160,7 @@ spec:
   rootVolumeSize: 15
   role: Node
   subnets:
-  - pocket-kube-private1
+  - pocket-kube-public
 
 ---
 
@@ -195,4 +185,4 @@ spec:
   rootVolumeSize: 15
   role: Node
   subnets:
-  - pocket-kube-private1
+  - pocket-kube-public
