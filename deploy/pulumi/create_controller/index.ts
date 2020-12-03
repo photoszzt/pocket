@@ -10,8 +10,8 @@ const keyName = config.require('keyName')
 const stack = pulumi.getStack()
 const vpc = new pulumi.StackReference(`${org}/create_vpc/${stack}`);
 
-const privateSubnetAz = vpc.getOutput("privateSubnetAz1");
-const privateSubnetId = vpc.getOutput("privateSubnetId1");
+const publicSubnetAz = vpc.getOutput("publicSubnetAz");
+const publicSubnetId = vpc.getOutput("publicSubnetId");
 
 export const pocketControllerPrivateIP = "10.1.47.178";
 const vmSgId = vpc.getOutput("vmSgId")
@@ -63,12 +63,14 @@ const pocket_controller = new aws.ec2.Instance("pocket-controller", {
     tags: {
         Name: "PocketController",
     },
-    availabilityZone: privateSubnetAz,
+    availabilityZone: publicSubnetAz,
     privateIp: pocketControllerPrivateIP,
-    subnetId: privateSubnetId,
+    subnetId: publicSubnetId,
     keyName: keyName,
     vpcSecurityGroupIds: [vmSgId, pocketRelaxSgId],
     userData: userData
 });
 
 export const instanceId = pocket_controller.id;
+export const instancePublicIP = pocket_controller.publicIp
+export const controllerPublicDNS = pocket_controller.publicDns

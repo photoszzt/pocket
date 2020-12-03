@@ -5,15 +5,8 @@ const vpc_name = "pocket-aws";
 const region = "us-east-1"
 export const pocketVPCNetworkCidr = "10.1.0.0/16";
 export const publicSubnetName = "pocket-kube-public"
-export const privateSubnetName = "pocket-kube-private"
-export const publicSubnetCidr1 = "10.1.128.0/18"
-export const publicSubnetCidr2 = "10.1.192.0/18"
-export const privateSubnetCidr1 = "10.1.0.0/18"
-export const privateSubnetCidr2 = "10.1.64.0/18"
-export const publicSubnetAz1 = "us-east-1d"
-export const publicSubnetAz2 = "us-east-1b"
-export const privateSubnetAz1 = "us-east-1d"
-export const privateSubnetAz2 = "us-east-1b"
+export const publicSubnetCidr = "10.1.0.0/17"
+export const publicSubnetAz = "us-east-1d"
 const vpc = new awsx.ec2.Vpc(vpc_name, {
     cidrBlock: pocketVPCNetworkCidr,
     subnets: [
@@ -21,37 +14,13 @@ const vpc = new awsx.ec2.Vpc(vpc_name, {
             type: "public",
             name: publicSubnetName + "1",
             location: {
-                availabilityZone: publicSubnetAz1,
-                cidrBlock: publicSubnetCidr1,
+                availabilityZone: publicSubnetAz,
+                cidrBlock: publicSubnetCidr,
             },
         },
-        {
-            type: "public",
-            name: publicSubnetName + "2",
-            location: {
-                availabilityZone: publicSubnetAz2,
-                cidrBlock: publicSubnetCidr2,
-            },
-        },
-        {
-            type: "private",
-            name: privateSubnetName + "1",
-            location: {
-                availabilityZone: privateSubnetAz1,
-                cidrBlock: privateSubnetCidr1,
-            },
-        },
-        {
-            type: "private",
-            name: privateSubnetName + "2",
-            location: {
-                availabilityZone: privateSubnetAz2,
-                cidrBlock: privateSubnetCidr2,
-            },
-        }
     ],
-    numberOfNatGateways: 1,
-    numberOfAvailabilityZones: 2,
+    numberOfNatGateways: 0,
+    numberOfAvailabilityZones: 1,
 });
 let defaultSgId = vpc.vpc.defaultSecurityGroupId
 // this security group is for vm and lambda; the name is chosen in the patch-cluster.py script
@@ -117,21 +86,9 @@ const s3 = new aws.ec2.VpcEndpoint("s3", {
 });
 
 export const POCKET_VPC_ID = vpc.id;
-const vpcPrivateSubnets = vpc.privateSubnets;
 const vpcPublicSubnets = vpc.publicSubnets;
-export const vpcNatGatewayId = vpc.natGateways.then(
-    natGateways => natGateways[0]["natGateway"]["id"]
-);
-export const privateSubnetId1 = vpcPrivateSubnets.then(
-    privateSubnets => privateSubnets[0]["subnet"]["id"]);
-export const privateSubnetId2 = vpcPrivateSubnets.then(
-    privateSubnets => privateSubnets[1]["subnet"]["id"]);
-
-export const publicSubnetId1 = vpcPublicSubnets.then(
+export const publicSubnetId = vpcPublicSubnets.then(
     publicSubnets => publicSubnets[0]["subnet"]["id"]
-);
-export const publicSubnetId2 = vpcPublicSubnets.then(
-    publicSubnets => publicSubnets[1]["subnet"]["id"]
 );
 export const bastionSgId = bastionSg.id;
 export const vmSgId = vmSg.id;

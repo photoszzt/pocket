@@ -1,2 +1,5 @@
 env.sh
 pocket-k8s-config.json
+create_bastion/Pulumi.twoaz.yaml
+create_controller/Pulumi.twoaz.yaml
+create_vpc/Pulumi.twoaz.yaml
