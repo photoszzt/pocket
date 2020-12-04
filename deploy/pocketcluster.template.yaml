@@ -6,7 +6,7 @@ metadata:
 spec:
   api:
     loadBalancer:
-      type: Internal
+      type: Public
   authorization:
     rbac: {}
   channel: stable
@@ -15,11 +15,17 @@ spec:
   etcdClusters:
   - etcdMembers:
     - instanceGroup: master-{{.POCKET_AWS_ZONE}}
-      name: c
+      name: d
     name: main
+  - etcdMembers:
+    - instanceGroup: master-{{.POCKET_AWS_ZONE}}
+      name: d
+    name: events
   iam:
     allowContainerRegistry: true
     legacy: false
+  kubelet:
+    anonymousAuth: false
   kubernetesApiAccess:
   - 0.0.0.0/0
   kubernetesVersion: 1.11.10
