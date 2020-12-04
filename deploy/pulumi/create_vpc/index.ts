@@ -12,7 +12,7 @@ const vpc = new awsx.ec2.Vpc(vpc_name, {
     subnets: [
         {
             type: "public",
-            name: publicSubnetName + "1",
+            name: publicSubnetName,
             location: {
                 availabilityZone: publicSubnetAz,
                 cidrBlock: publicSubnetCidr,
