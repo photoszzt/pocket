@@ -2,7 +2,7 @@ apiVersion: kops/v1alpha2
 kind: Cluster
 metadata:
   creationTimestamp: null
-  name: pocketcluster.k8s.local
+  name: {{.NAME}}
 spec:
   api:
     loadBalancer:
@@ -11,7 +11,7 @@ spec:
     rbac: {}
   channel: stable
   cloudProvider: aws
-  configBase: {{.KOPS_STATE_STORE}}/pocketcluster.k8s.local
+  configBase: {{.KOPS_STATE_STORE}}/{{.NAME}}
   etcdClusters:
   - etcdMembers:
     - instanceGroup: master-{{.POCKET_AWS_ZONE}}
@@ -29,7 +29,7 @@ spec:
   kubernetesApiAccess:
   - 0.0.0.0/0
   kubernetesVersion: 1.11.10
-  masterPublicName: api.pocketcluster.k8s.local
+  masterPublicName: api.{{.NAME}}
   networkCIDR: {{.POCKET_VPC_NETWORK_CIDR}}
   networkID: {{.POCKET_VPC_ID}}
   networking:
@@ -56,7 +56,7 @@ kind: InstanceGroup
 metadata:
   creationTimestamp: null
   labels:
-    kops.k8s.io/cluster: pocketcluster.k8s.local
+    kops.k8s.io/cluster: {{.NAME}}
   name: master-{{.POCKET_AWS_ZONE}}
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20
@@ -77,14 +77,14 @@ kind: InstanceGroup
 metadata:
   creationTimestamp: null
   labels:
-    kops.k8s.io/cluster: pocketcluster.k8s.local
+    kops.k8s.io/cluster: {{.NAME}}
   name: dram-nodes
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20
   # image: 099720109477/ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20200907
   machineType: r5.2xlarge
-  maxSize: 3
-  minSize: 3
+  maxSize: 5
+  minSize: 5
   nodeLabels:
     kops.k8s.io/instancegroup: dram-nodes
     spot: "true"
@@ -101,7 +101,7 @@ kind: InstanceGroup
 metadata:
   creationTimestamp: null
   labels:
-    kops.k8s.io/cluster: pocketcluster.k8s.local
+    kops.k8s.io/cluster: {{.NAME}}
   name: metadata-nodes
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20
@@ -125,7 +125,7 @@ kind: InstanceGroup
 metadata:
   creationTimestamp: null
   labels:
-    kops.k8s.io/cluster: pocketcluster.k8s.local
+    kops.k8s.io/cluster: {{.NAME}}
   name: nvme-nodes
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20
@@ -150,7 +150,7 @@ kind: InstanceGroup
 metadata:
   creationTimestamp: null
   labels:
-    kops.k8s.io/cluster: pocketcluster.k8s.local
+    kops.k8s.io/cluster: {{.NAME}}
   name: hdd-nodes
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20
@@ -175,7 +175,7 @@ kind: InstanceGroup
 metadata:
   creationTimestamp: null
   labels:
-    kops.k8s.io/cluster: pocketcluster.k8s.local
+    kops.k8s.io/cluster: {{.NAME}}
   name: ssd-nodes
 spec:
   image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2020-07-20

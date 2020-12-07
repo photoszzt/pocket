@@ -10,9 +10,11 @@ CONFIG=$(cat $1)
 CLUSTER_NAME="$(echo ${CONFIG} | jq -r .NAME)"
 STATE="$(echo ${CONFIG} | jq -r .KOPS_STATE_STORE)"
 
-kops toolbox template --name ${CLUSTER_NAME} --values <( echo ${CONFIG}) --template pocketcluster.template.yaml --format-yaml > pocketcluster.k8s.local.yaml
+echo ${CLUSTER_NAME}
 
-kops replace -f pocketcluster.k8s.local.yaml --name ${CLUSTER_NAME} --state ${STATE} --force
+kops toolbox template --name ${CLUSTER_NAME} --values <( echo ${CONFIG}) --template pocketcluster.template.yaml --format-yaml > ${CLUSTER_NAME}.yaml
+
+kops replace -f ${CLUSTER_NAME}.yaml --name ${CLUSTER_NAME} --state ${STATE} --force
 
 kops create secret --name ${CLUSTER_NAME} --state ${STATE} sshpublickey admin -i ~/.ssh/id_rsa.pub
 
