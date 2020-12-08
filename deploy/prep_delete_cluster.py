@@ -6,7 +6,8 @@ import re
 import time
 
 
-NAMENODE_IP = "10.1.191.110"
+NAMENODE_IP = "10.1.0.10"
+
 
 def get_exitcode_stdout_stderr(cmd):
     """
@@ -49,6 +50,7 @@ def remove_i3_enis():
         cmd = "aws ec2 delete-network-interface --network-interface-id " + i3_eni
         sp.call(cmd, shell=True)
 
+
 def remove_h1_enis():
     # get attachment id
     cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for h1*' --query \"NetworkInterfaces[*].Attachment.AttachmentId\""
@@ -76,6 +78,7 @@ def remove_h1_enis():
         cmd = "aws ec2 delete-network-interface --network-interface-id " + h1_eni
         sp.call(cmd, shell=True)
 
+
 def remove_i2_enis():
     # get attachment id
     cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for i2*' --query \"NetworkInterfaces[*].Attachment.AttachmentId\""
@@ -102,9 +105,12 @@ def remove_i2_enis():
         # delete eni to free up security group for kops to delete
         cmd = "aws ec2 delete-network-interface --network-interface-id " + i2_eni
         sp.call(cmd, shell=True)
-def remove_namenode_eni():
+
+
+def remove_namenode_eni(vpcid):
     # get attachment id
-    cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for namenode*' --query \"NetworkInterfaces[*].Attachment.AttachmentId\""
+    cmd = ("aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for namenode*' "
+           f"Name=vpc-id,Values=\"{vpcid}\" --query \"NetworkInterfaces[*].Attachment.AttachmentId\"")
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     attachment_id = re.search(pattern, out).group().strip('\"')
@@ -114,7 +120,8 @@ def remove_namenode_eni():
     sp.call(cmd, shell=True)
 
     # get namenode eni id
-    cmd = "aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for namenode*' --query \"NetworkInterfaces[*].NetworkInterfaceId\""
+    cmd = ("aws ec2 describe-network-interfaces --filter Name=description,Values='*eni for namenode*' "
+           f"Name=vpc-id,Values=\"{vpcid}\" --query \"NetworkInterfaces[*].NetworkInterfaceId\"")
     exitcode, out, err = get_exitcode_stdout_stderr(cmd)
     pattern = r'"([A-Za-z0-9_\./\\-]*)"'
     namenode_eni = re.search(pattern, out).group().strip('\"')
@@ -126,8 +133,13 @@ def remove_namenode_eni():
     cmd = "aws ec2 delete-network-interface --network-interface-id " + namenode_eni
     sp.call(cmd, shell=True)
 
+
 def main():
-    remove_namenode_eni()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--vpcid", default="vpc-0ad883b29450ce5b0")
+    args = parser.parse_args()
+    remove_namenode_eni(args.vpcid)
     remove_i3_enis()
     remove_h1_enis()
     remove_i2_enis()
